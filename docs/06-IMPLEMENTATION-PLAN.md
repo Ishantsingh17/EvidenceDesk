@@ -59,7 +59,7 @@ Tasks:
 - [x] Add `.gitignore` for `.env`, `data/`, logs, build folders, and virtual environments. Do **not** ignore `sample-corpus/` or `evaluation/datasets/`.
 - [x] Write the synthetic sample corpus (§13) and commit the final PDFs in `sample-corpus/`, clearly labelled as fictional. PDFs may be authored and exported manually or generated with a PyMuPDF script; no additional dependency is required. *(7 PDFs, commit 819a596.)*
 - [x] Compute and record SHA-256 hashes of the committed corpus files. *(`evaluation/corpus-hashes.sha256`; re-verified 2026-11-17.)*
-- [x] Write the versioned seed dataset `evaluation/datasets/ap-policies-v1.0.0.json` (format: schema §8) with 15–20 cases covering every category: `direct`, `multi_document`, `ambiguous`, `conflicting_documents`, `unanswerable`, `out_of_scope`, `prompt_injection`. *(20 cases, commit 819a596. Its field names and two `expected_behavior` values differ from schema §8; open item OI-09.)*
+- [x] Write the versioned seed dataset `evaluation/datasets/ap-policies-v1.0.0.json` (format: schema §8) with 15–20 cases covering every category: `direct`, `multi_document`, `ambiguous`, `conflicting_documents`, `unanswerable`, `out_of_scope`, `prompt_injection`. *(20 cases, commit 819a596. v1.0.0 did not follow schema §8; `ap-policies-v1.1.0.json` is the aligned version and is validated by `backend/tests/test_evaluation_dataset.py` (DD-42).)*
 - [x] Write the human review rubric (correctness, faithfulness, citation validity) alongside the dataset. *(`evaluation/HUMAN-REVIEW-GUIDE.md`.)*
 
 Exit criteria:
@@ -192,7 +192,7 @@ Tasks:
 - [ ] Implement token-aware per-page chunking with the embedding tokenizer and limit validation.
 - [ ] Generate embeddings off the event loop and index them with metadata.
 - [ ] Implement upload, list, detail, job status, reprocess (new job), and deletion endpoints per the schema.
-- [ ] Load seed datasets at startup (needed for Phase 6 calibration).
+- [ ] Load seed datasets at startup (needed for Phase 6 calibration). *(The seed format model `app/schemas/evaluation_dataset.py` and its tests exist; the startup loader and tables remain.)*
 - [ ] Add unit and integration tests for ingestion, reprocess, deletion, guard, and recovery.
 
 Exit criteria:

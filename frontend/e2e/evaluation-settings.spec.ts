@@ -3,9 +3,9 @@ import { expect, test } from '@playwright/test'
 test('evaluation shows the real dataset and no invented results', async ({ page }) => {
   await page.goto('/evaluations')
   await expect(page.getByTestId('dataset-summary')).toContainText('20')
-  await expect(page.getByTestId('dataset-summary')).toContainText('version 1.0.0')
+  await expect(page.getByTestId('dataset-summary')).toContainText('ap-policies version 1.1.0')
 
-  // Category counts read from evaluation/datasets/ap-policies-v1.0.0.json.
+  // Category counts read from evaluation/datasets/ap-policies-v1.1.0.json.
   const table = page.getByTestId('category-table')
   for (const [label, count] of [
     ['Direct', '5'],

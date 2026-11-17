@@ -131,6 +131,7 @@ Do not substitute a different framework, database, embedding provider, LLM provi
 ## 7. Evaluation integrity rules
 
 - Build the labelled dataset during early project setup as a versioned JSON seed file using stable SHA-256 file hashes, with the categories `direct`, `multi_document`, `ambiguous`, `conflicting_documents`, `unanswerable`, `out_of_scope`, and `prompt_injection`.
+- The dataset to load is `evaluation/datasets/ap-policies-v1.1.0.json` (schema §8 format, DD-42); `v1.0.0` is history only. Never edit a published dataset; publish a new version and keep `backend/tests/test_evaluation_dataset.py` passing. Evaluation behaviours are `answer`, `qualified_answer`, `abstain` and `refuse_unsafe_request` (evaluation-only; the last one only when the user's own request is unsafe, not for injection that exists only inside a document).
 - Define retrieval relevance at the unique (document, page) level.
 - Report retrieval and generation metrics separately.
 - Define Precision@k, Recall@k, MRR, answer correctness, faithfulness, citation support, abstention correctness, and latency as described in the backend schema.

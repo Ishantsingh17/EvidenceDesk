@@ -1,4 +1,4 @@
-// Example questions taken from the labelled dataset (evaluation/datasets/ap-policies-v1.0.0.json).
+// Example questions taken from the labelled dataset (evaluation/datasets/ap-policies-v1.1.0.json).
 // In mock mode these are the only questions with prepared answers; the live backend accepts any question.
 export const exampleQuestions: { question: string; hint: string }[] = [
   {

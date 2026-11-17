@@ -1,5 +1,5 @@
 // Prepared mock-mode answers for questions from the labelled dataset
-// (evaluation/datasets/ap-policies-v1.0.0.json). Every excerpt is quoted from the
+// (evaluation/datasets/ap-policies-v1.1.0.json). Every excerpt is quoted from the
 // real sample-corpus PDF text, and answers cite only those excerpts.
 // Distances, chunk indexes and durations are demo values.
 

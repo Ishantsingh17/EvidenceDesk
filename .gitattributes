@@ -1,0 +1,4 @@
+# Evaluation ground truth depends on exact file bytes (SHA-256). Never convert line endings.
+sample-corpus/** binary
+evaluation/datasets/*.json -text
+evaluation/corpus-hashes.sha256 -text

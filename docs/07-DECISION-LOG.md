@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Document type | Architecture and product decision log |
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Active |
 
 This log records approved decisions that change or clarify the baseline documents. When a decision here conflicts with older wording elsewhere, this log and `docs/04-BACKEND-SCHEMA.md` take precedence, and the conflicting document must be corrected.
@@ -146,12 +146,14 @@ Made under the product owner's Phase 2B brief (Documents, AI Assistant, Evaluati
 | Final `MIN_PAGE_TEXT_CHARS` | 4 | Implementation-time calibration |
 | Pinned `chromadb` version and its confirmed cosine/metadata API | 4 | Implementation-time calibration |
 
+## 3d. Dataset alignment (2026-11-17)
+
+| ID | Status | Decision | Reason | Affected documents |
+|---|---|---|---|---|
+| DD-42 | Approved (resolves OI-09) | **Evaluation dataset v1.1.0 in the schema §8 format.** The product owner approved option (b): `ap-policies-v1.0.0.json` stays unchanged (SHA-256 `0fbe3863…3c38727`) and `ap-policies-v1.1.0.json` is the dataset to load. The schema stays canonical. Same 20 questions, categories, document hashes and one-based pages. **Field mapping:** `dataset_id` → `dataset.name`; `version` → `dataset.version` (`1.1.0`); `name` + `description` → `dataset.description`; `created_for` → folded into the description; `category_vocabulary` → dropped (schema §2.8 defines it); `scoring_guidance` → dropped (covered by schema §9 and `HUMAN-REVIEW-GUIDE.md`); `corpus[]` → `documents[]` with new `document_key`; `sha256` → `file_hash`; `required_for_evaluation` (all true) and corpus `description` → dropped; `case_id` → `case_key`; `expected_facts` → `answer_criteria`; `expected_sources[{filename, sha256, page_numbers[]}]` + `expected_relevant_pages[]` (verified identical) → `expected_sources[{document_key, page_number}]`; `is_answerable` → dropped (implied by `expected_behavior`); `must_resist_prompt_injection` → `must_not_contain` strings plus tags; `tags` added. **Rule corrections found during the check:** the three `conflicting_documents` cases change `answer` → `qualified_answer` (§2.8); the three `unanswerable` (abstain) cases lose their expected sources, which move into `review_notes` (§8). **Behaviour decisions:** AP-AMB-001 and AP-AMB-002 change `clarify` → `qualified_answer`, because the MVP has no follow-up turn and an uncited clarification would become `insufficient_evidence` (DD-05), while the corpus supports both readings; their reference answers and criteria are rewritten so the answer is citable and still asks the user to specify. AP-PI-002 keeps `refuse_unsafe_request`, because the user's own request demands secrets; this value is added to the **evaluation-only** behaviour enum, excluded from abstention correctness and scored by a required `must_not_contain` check plus human review. `clarify` is not added. The live query response contract is unchanged. v1.1.0 SHA-256: `0cbe2ab5…8156c27`. A new `.gitattributes` stores `sample-corpus/**`, `evaluation/datasets/*.json` and `evaluation/corpus-hashes.sha256` byte-for-byte (no line-ending conversion), so file hashes stay stable on every checkout. | v1.0.0 did not validate against schema §8; a changed seed needs a new version (DD-14). | Schema §2.8/§3.10/§8/§9.2–9.4/§11, `backend/app/schemas/evaluation_dataset.py`, `HUMAN-REVIEW-GUIDE.md` |
+
 ## 5. Open items
 
-OI-01 to OI-08 are resolved by D-21 to D-28.
+OI-01 to OI-08 are resolved by D-21 to D-28. OI-09 (seed dataset format vs schema §8 and §2.8) is resolved by DD-42.
 
-| ID | Item | Detail | Needed before |
-|---|---|---|---|
-| OI-09 | Seed dataset format vs schema §8 / §2.8 | The committed `evaluation/datasets/ap-policies-v1.0.0.json` (20 cases) does not follow schema §8: it uses `dataset_id`, `corpus[].sha256`, `case_id`, `expected_sources[].page_numbers` and `expected_relevant_pages` instead of `documents[].file_hash`, `case_key` and `expected_sources[].{document_key, page_number}`. It also uses two `expected_behavior` values the schema does not allow: `clarify` (AP-AMB-001, AP-AMB-002) and `refuse_unsafe_request` (AP-PI-002); schema §2.8 allows only `answer`, `qualified_answer` and `abstain`. **Options:** (a) update schema §8 and §2.8 to accept the file as written (and decide how `clarify` and `refuse_unsafe_request` are scored for abstention correctness), or (b) publish `ap-policies-v1.1.0.json` in the schema format (DD-14: a changed seed file needs a new version). The frontend reads the file as written and only uses fields both formats share. | Phase 4 dataset loader |
-
-All derived decisions DD-01 to DD-41 are approved, except DD-16 (superseded). OI-09 awaits a product-owner decision. The remaining items are OI-09 and the implementation-time calibration values in §4.
+There are no open decisions. All derived decisions DD-01 to DD-42 are approved, except DD-16 (superseded). The only remaining items are the implementation-time calibration values in §4.

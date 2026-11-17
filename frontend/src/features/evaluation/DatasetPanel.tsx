@@ -48,7 +48,7 @@ export function DatasetPanel({
                 {env.apiMode === 'mock' && (
                   <p className="text-caption text-muted-foreground">
                     Read by the mock adapter from the committed seed file{' '}
-                    <code className="rounded-sm bg-muted px-1">evaluation/datasets/ap-policies-v1.0.0.json</code>.
+                    <code className="rounded-sm bg-muted px-1">evaluation/datasets/ap-policies-v1.1.0.json</code>.
                   </p>
                 )}
               </div>

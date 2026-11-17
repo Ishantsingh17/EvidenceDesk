@@ -383,32 +383,30 @@ async function sha256Hex(file: File): Promise<string> {
 
 // ---------------------------------------------------------------- dataset (real seed file)
 
+/** Seed file format, schema §8 (validated by backend/tests/test_evaluation_dataset.py). */
 interface SeedDataset {
-  dataset_id: string
-  name: string
-  version: string
-  description: string
-  corpus: { filename: string; sha256: string }[]
-  cases: { category: EvaluationCategory }[]
+  dataset: { name: string; version: string; description: string | null }
+  documents: { document_key: string; filename: string; file_hash: string }[]
+  cases: { case_key: string; category: EvaluationCategory }[]
 }
 
 async function loadDatasetSummary(): Promise<EvaluationDatasetSummary> {
-  const seed = (await import('@evaluation/ap-policies-v1.0.0.json')).default as SeedDataset
+  const seed = (await import('@evaluation/ap-policies-v1.1.0.json')).default as SeedDataset
   const categories: Partial<Record<EvaluationCategory, number>> = {}
   seed.cases.forEach((c) => {
     categories[c.category] = (categories[c.category] ?? 0) + 1
   })
-  const corpus = seed.corpus.map((file) => ({
-    document_key: file.filename.replace(/\.pdf$/i, ''),
-    filename: file.filename,
-    file_hash: file.sha256,
-    indexed: documents.some((d) => d.file_hash === file.sha256 && isSearchable(d)),
+  const corpus = seed.documents.map((doc) => ({
+    document_key: doc.document_key,
+    filename: doc.filename,
+    file_hash: doc.file_hash,
+    indexed: documents.some((d) => d.file_hash === doc.file_hash && isSearchable(d)),
   }))
   return {
-    id: seed.dataset_id,
-    name: seed.name,
-    version: seed.version,
-    description: seed.description,
+    id: `${seed.dataset.name}@${seed.dataset.version}`,
+    name: seed.dataset.name,
+    version: seed.dataset.version,
+    description: seed.dataset.description ?? '',
     case_count: seed.cases.length,
     categories,
     corpus,

@@ -93,7 +93,7 @@ To see the screens with demo data, run in mock mode: `$env:VITE_API_MODE='mock';
 
 - **Documents:** uploads are checked in the browser (a committed sample PDF is caught as a duplicate by its SHA-256) and processing is simulated and labelled; nothing is stored or indexed.
 - **AI Assistant:** the example questions have prepared answers quoted from the sample PDFs; other questions get a "no prepared answer" notice.
-- **Evaluation:** shows the real dataset (`evaluation/datasets/ap-policies-v1.0.0.json`); no run or metric is simulated.
+- **Evaluation:** shows the real dataset (`evaluation/datasets/ap-policies-v1.1.0.json`); no run or metric is simulated.
 - Add `?mock=empty` to the URL to see an empty workspace.
 
 In the default live mode, panels without a backend endpoint yet show "Not available yet".
