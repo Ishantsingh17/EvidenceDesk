@@ -4,6 +4,7 @@ import {
   apiDelete,
   apiGet,
   apiPost,
+  apiPut,
   apiUpload,
   subscribeEvents,
 } from '@/services/api/client'
@@ -16,6 +17,9 @@ import type {
   DocumentListParams,
   JobDetail,
   EvaluationDatasetSummary,
+  EvaluationResultDetail,
+  EvaluationReview,
+  EvaluationRunDetail,
   EvaluationRunListItem,
   FeedbackRating,
   Paginated,
@@ -24,6 +28,7 @@ import type {
   QueryListItem,
   QueryRequest,
   ReprocessAccepted,
+  RunAccepted,
   SettingsStatus,
   UploadAccepted,
   WorkflowEvent,
@@ -54,6 +59,11 @@ export interface WorkspaceApi {
 
   listEvaluationDatasets(signal?: AbortSignal): Promise<{ items: EvaluationDatasetSummary[] }>
   listEvaluationRuns(signal?: AbortSignal): Promise<Paginated<EvaluationRunListItem>>
+  startEvaluationRun(datasetId: string): Promise<RunAccepted>
+  getEvaluationRun(runId: string, signal?: AbortSignal): Promise<EvaluationRunDetail>
+  getEvaluationResult(runId: string, resultId: string, signal?: AbortSignal): Promise<EvaluationResultDetail>
+  saveReview(resultId: string, review: EvaluationReview): Promise<EvaluationReview>
+  subscribeRunEvents(eventsUrl: string, onEvent: EventHandler, onError: StreamErrorHandler): () => void
 }
 
 function documentQuery({ pageSize, search, status }: DocumentListParams): string {
@@ -89,6 +99,12 @@ const liveWorkspaceApi: WorkspaceApi = {
 
   listEvaluationDatasets: (signal) => apiGet('/evaluations/datasets', signal),
   listEvaluationRuns: (signal) => apiGet('/evaluations/runs?page_size=10', signal),
+  startEvaluationRun: (datasetId) => apiPost('/evaluations/run', { dataset_id: datasetId }),
+  getEvaluationRun: (runId, signal) => apiGet(`/evaluations/runs/${encodeURIComponent(runId)}`, signal),
+  getEvaluationResult: (runId, resultId, signal) =>
+    apiGet(`/evaluations/runs/${encodeURIComponent(runId)}/results/${encodeURIComponent(resultId)}`, signal),
+  saveReview: (resultId, review) => apiPut(`/evaluations/results/${encodeURIComponent(resultId)}/review`, review),
+  subscribeRunEvents: subscribeEvents,
 }
 
 /** Chosen once from VITE_API_MODE. Live mode never falls back to mock data. */

@@ -21,7 +21,7 @@ test('evaluation shows the real dataset and no invented results', async ({ page 
 
   await expect(page.getByTestId('corpus-readiness').getByRole('listitem')).toHaveCount(7)
   await expect(page.getByRole('button', { name: 'Run evaluation' })).toBeDisabled()
-  await expect(page.getByTestId('run-blocked-reason')).toContainText('No results are simulated')
+  await expect(page.getByTestId('run-blocked-reason')).toContainText('results are never simulated')
 
   // Every metric says "Not run yet"; no percentage appears anywhere on the page.
   await expect(page.getByText('Not run yet', { exact: true })).toHaveCount(12)

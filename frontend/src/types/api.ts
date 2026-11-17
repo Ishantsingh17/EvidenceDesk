@@ -364,3 +364,118 @@ export interface JobDetail extends JobSummary {
   }[]
   last_sequence_number: number
 }
+
+export type ExpectedBehavior = 'answer' | 'qualified_answer' | 'abstain' | 'refuse_unsafe_request'
+export type CorrectnessRating = 'correct' | 'partially_correct' | 'incorrect' | 'not_applicable'
+export type FaithfulnessRating = 'faithful' | 'partially_faithful' | 'unfaithful' | 'not_applicable'
+export type CitationValidity = 'valid' | 'partially_valid' | 'invalid' | 'not_applicable'
+
+export interface EvaluationReview {
+  correctness_rating: CorrectnessRating
+  faithfulness_rating: FaithfulnessRating
+  citation_validity: CitationValidity
+  reviewer_comment: string | null
+  reviewer_label: string | null
+  created_at?: string
+  updated_at?: string
+}
+
+export interface RunAccepted {
+  run_id: string
+  status: 'queued'
+  events_url: string
+  result_url: string
+}
+
+interface MetricValue {
+  value: number | null
+  sample_count: number
+}
+
+export interface EvaluationSummary {
+  retrieval: {
+    method: string
+    relevance_unit: string
+    precision_at_k: MetricValue & { excluded_count: number }
+    recall_at_k: MetricValue & { excluded_count: number }
+    mrr: MetricValue & { excluded_count: number }
+  }
+  abstention: { method: string; abstention_correctness: MetricValue & { numerator: number } }
+  citations: { method: string; citation_source_match: MetricValue & { numerator: number } }
+  prompt_injection: { method: string; must_not_contain_passed: MetricValue & { numerator: number } }
+  latency: { method: string; median_ms: number | null; p95_ms: number | null; mean_ms: number | null; sample_count: number }
+  human_review?: {
+    method: string
+    reviewed_count: number
+    eligible_count: number
+    correctness: MetricValue
+    faithfulness: MetricValue
+    citation_validity: MetricValue
+  }
+}
+
+export interface SourcePage {
+  file_hash: string
+  filename: string
+  page_number: number
+  rank?: number
+}
+
+export interface EvaluationResultItem {
+  result_id: string
+  case_id: string
+  case_key: string
+  question: string
+  category: EvaluationCategory
+  expected_behavior: ExpectedBehavior
+  expected_sources: SourcePage[]
+  execution_status: 'completed' | 'failed'
+  error_code: string | null
+  failure_type: 'infrastructure' | 'pipeline' | null
+  llm_attempt_count: number | null
+  insufficient_evidence: boolean | null
+  flag_for_review: boolean | null
+  retrieved_sources: SourcePage[]
+  precision_at_k: number | null
+  recall_at_k: number | null
+  reciprocal_rank: number | null
+  abstention_correct: boolean | null
+  citation_source_match: boolean | null
+  must_not_contain_passed: boolean | null
+  latency_ms: number | null
+  review: EvaluationReview | null
+}
+
+export interface EvaluationRunDetail {
+  run_id: string
+  dataset: { id: string; name: string; version: string }
+  status: EvaluationRunStatus
+  configuration: Record<string, unknown>
+  case_count: number
+  completed_case_count: number
+  failed_case_count: number
+  infrastructure_failure_count: number
+  pipeline_failure_count: number
+  created_at: string
+  started_at: string | null
+  completed_at: string | null
+  duration_ms: number | null
+  error_code: string | null
+  error_message: string | null
+  summary: EvaluationSummary | null
+  by_category: { category: EvaluationCategory; case_count: number; completed_count: number; abstention_correct_count: number }[]
+  results: EvaluationResultItem[]
+}
+
+export interface EvaluationResultDetail extends EvaluationResultItem {
+  expected_answer: string | null
+  answer_criteria: string[]
+  must_not_contain: string[]
+  review_notes: string | null
+  answer: string | null
+  abstention_reason: AbstentionReason | null
+  review_reasons: ReviewReason[]
+  error_message: string | null
+  citations: Citation[]
+  retrieved_chunks: RetrievedChunk[]
+}

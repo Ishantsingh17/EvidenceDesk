@@ -74,7 +74,19 @@ Run (single worker), from `backend/`:
 .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-Health check: `http://127.0.0.1:8000/api/v1/health`. Data is written to the root `data/` folder.
+Health check: `http://127.0.0.1:8000/api/v1/health` (shows `starting` until the embedding model has loaded, then `healthy`). Data is written to the root `data/` folder.
+
+Settings to check in `backend\.env`:
+
+- `GROQ_API_KEY`: your key, backend only. Without it, uploads and retrieval work, but answers fail with `GROQ_AUTHENTICATION_FAILED`.
+- `GROQ_MODEL=openai/gpt-oss-20b`.
+- `RETRIEVAL_MAX_DISTANCE=0.65`: the evidence threshold calibrated on dataset v1.1.0 (decision log §4). Leave it blank to run without a threshold; the UI then says it is not calibrated.
+
+To re-run the calibration: `.venv\Scripts\python.exe -m scripts.calibrate_threshold` from `backend/`. It uses a temporary database and does not call Groq.
+
+First run: upload the 7 PDFs from `sample-corpus/` on the Documents page, then use the AI Assistant, or run the evaluation from the Evaluation page (20 cases, about 2–3 minutes; it calls Groq for each case that passes the threshold).
+
+Demo reset: stop the backend, delete the root `data/` folder, start again and re-upload `sample-corpus/`.
 
 Checks, from `backend/`: `.venv\Scripts\python.exe -m pytest` and `.venv\Scripts\python.exe -m ruff check .`
 
@@ -93,10 +105,10 @@ To see the screens with demo data, run in mock mode: `$env:VITE_API_MODE='mock';
 
 - **Documents:** uploads are checked in the browser (a committed sample PDF is caught as a duplicate by its SHA-256) and processing is simulated and labelled; nothing is stored or indexed.
 - **AI Assistant:** the example questions have prepared answers quoted from the sample PDFs; other questions get a "no prepared answer" notice.
-- **Evaluation:** shows the real dataset (`evaluation/datasets/ap-policies-v1.1.0.json`); no run or metric is simulated.
+- **Evaluation:** shows the real dataset (`evaluation/datasets/ap-policies-v1.1.0.json`); runs are disabled because results are never simulated.
 - Add `?mock=empty` to the URL to see an empty workspace.
 
-In the default live mode, panels without a backend endpoint yet show "Not available yet".
+The default live mode uses the real backend for every screen and never falls back to mock data. If the backend is down, panels show an error state.
 
 Checks: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:e2e` (starts the backend and frontend automatically).
 

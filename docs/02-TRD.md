@@ -265,8 +265,8 @@ Every stage publishes `started` and `completed`/`failed` events with timestamps,
 | `CHUNK_SIZE_TOKENS` | 220 | Configurable; must fit within the embedder's maximum sequence length. |
 | `CHUNK_OVERLAP_TOKENS` | 40 | Configurable; must be less than chunk size. |
 | `RETRIEVAL_TOP_K` | 4 | Starting point for retrieval experiments. |
-| `RETRIEVAL_MAX_DISTANCE` | Calibrate | Do not assume a universal threshold; calibrate against the labelled dataset. |
-| `MIN_PAGE_TEXT_CHARS` | 30 (provisional) | Page-warning threshold; verify against the sample corpus. |
+| `RETRIEVAL_MAX_DISTANCE` | 0.65 (calibrated) | Calibrated on dataset v1.1.0 with `backend/scripts/calibrate_threshold.py` (decision log §4). Not universal: re-calibrate when the model, chunking, corpus or dataset changes. |
+| `MIN_PAGE_TEXT_CHARS` | 30 | Verified against the sample corpus (no page flagged). |
 
 ChromaDB cosine distance is a distance value (lower is more similar). Keep distance semantics explicit in code and UI; do not label a raw distance as a similarity percentage.
 
@@ -481,8 +481,10 @@ These are the only frontend variables. Neither may contain a secret.
 The decisions are made (`docs/07-DECISION-LOG.md` D-21 to D-28). The following values are measured or confirmed during implementation and recorded in the decision log's "Implementation-time calibration" table (§4):
 
 - Exact Python 3.13 patch version and pinned library/Node package versions (Phase 1) — recorded: Python 3.13.16; see decision log §4.
-- Live confirmation that `openai/gpt-oss-20b` is available and honours the strict schema, or that the non-strict fallback (DD-27) is needed (Phase 6).
-- Calibrated `RETRIEVAL_MAX_DISTANCE`, its method, and the dataset version (Phase 6).
-- Final `MIN_PAGE_TEXT_CHARS` from the synthetic corpus (Phase 4).
-- Pinned `chromadb` version and its confirmed cosine/metadata API (Phase 4).
+- Live confirmation that `openai/gpt-oss-20b` is available and honours the strict schema, or that the non-strict fallback (DD-27) is needed (Phase 6) — recorded: strict mode works.
+- Calibrated `RETRIEVAL_MAX_DISTANCE`, its method, and the dataset version (Phase 6) — recorded: 0.65 on v1.1.0.
+- Final `MIN_PAGE_TEXT_CHARS` from the synthetic corpus (Phase 4) — recorded: 30.
+- Pinned `chromadb` version and its confirmed cosine/metadata API (Phase 4) — recorded: 1.5.9.
+
+Implementation notes (2026-11-17): the model often leaves out inline `[Sx]` markers, so citations come from the validated `cited_sources` list (DD-46); evaluation latency includes Groq retry waits (DD-45); the threading model and model-load behaviour are in DD-48.
 - Whether RAGAS or an LLM judge is added after the basic metrics work (stretch).

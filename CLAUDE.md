@@ -61,7 +61,7 @@ Do not substitute a different framework, database, embedding provider, LLM provi
 - Store the embedding model and dimension with the ChromaDB collection and never mix embeddings from different models.
 - Never log, persist, or display model reasoning output from the LLM provider.
 - Evaluation cases make at most 3 Groq attempts in total for transient failures (1 initial + up to 2 retries, waits of 1 s and 2 s, never earlier than `Retry-After`; a `Retry-After` over 15 s stops retrying); exhausted attempts are recorded as infrastructure failures and excluded from quality metrics. User queries are not retried.
-- Calibrate retrieval thresholds using labelled test questions. Do not invent a universal score threshold.
+- Calibrate retrieval thresholds using labelled test questions. Do not invent a universal score threshold. Current value: `RETRIEVAL_MAX_DISTANCE=0.65`, from `backend/scripts/calibrate_threshold.py` on dataset v1.1.0 (decision log §4); re-run the script if chunking, the model, the corpus or the dataset changes.
 - Chroma cosine distance is a distance value; lower is closer. Do not label raw distance as a percentage.
 - Preserve PDF page numbers in extracted text, chunks, retrieval results, and citations.
 - The first version supports text-based PDFs. Do not silently claim OCR or complex table extraction is supported.
@@ -115,7 +115,8 @@ Do not substitute a different framework, database, embedding provider, LLM provi
 
 ## 6. Backend engineering rules
 
-- Keep API routes thin; put business logic in focused service modules.
+- Keep API routes thin; put business logic in focused service modules. Layout: `app/api/routes/` (thin routes), `app/api/sse.py`, `app/services/` (`document_service`, `ingestion_service`, `chunking_service`, `embedding_service`, `vector_store`, `retrieval_service`, `llm_service`, `citation_service`, `rag_pipeline`, `query_service`, `event_service`, `recovery_service`, `evaluation/`), `app/db/` (`schema.py` migrations, `sqlite.py` helpers), `app/runtime.py` (model, store, executors, DD-02 lock).
+- Backend tests never call Groq or load the real model: use `tests/fakes.py` (`FakeEmbedder`, `FakeLlm`) through `create_app(embedder_factory=..., llm_factory=...)`.
 - Use typed Pydantic request/response models.
 - Keep configuration in validated settings, not scattered literals.
 - Use stable error codes and safe user-facing messages.

@@ -572,6 +572,24 @@ export const mockWorkspaceApi: WorkspaceApi = {
     return respond({ items: [summary] }, signal)
   },
 
-  // No evaluation engine exists yet, so there are never any runs (no invented results).
+  // Evaluation results are never simulated (DD-40): mock mode has no runs and cannot start one.
   listEvaluationRuns: (signal) => respond(paginate([], 10), signal),
+  startEvaluationRun: async () => {
+    await respond(null)
+    throw new ApiError(
+      409,
+      'MOCK_EVALUATION_UNSUPPORTED',
+      'Evaluation runs need the live backend. Mock mode never simulates evaluation results.',
+    )
+  },
+  getEvaluationRun: async () => {
+    throw new ApiError(404, 'EVALUATION_RUN_NOT_FOUND', 'Mock mode has no evaluation runs.')
+  },
+  getEvaluationResult: async () => {
+    throw new ApiError(404, 'EVALUATION_RESULT_NOT_FOUND', 'Mock mode has no evaluation results.')
+  },
+  saveReview: async () => {
+    throw new ApiError(409, 'REVIEW_NOT_ALLOWED', 'Mock mode has no evaluation results to review.')
+  },
+  subscribeRunEvents: subscribe,
 }

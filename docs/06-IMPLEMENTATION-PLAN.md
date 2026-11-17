@@ -158,8 +158,8 @@ The mock adapter is selected only by `VITE_API_MODE=mock`, returns data shaped e
 - [x] Evaluation run controls. *("Run evaluation" is disabled with a reason until the Phase 7 engine exists.)*
 - [x] Metric cards grouped by method, with sample counts. *(All "Not run yet"; no values are invented.)*
 - [x] Recharts visualisations. *(Dataset cases per category; result charts need real runs.)*
-- [ ] Per-case result table and detail view. *(Deferred to Phase 7: results cannot be shown without inventing them.)*
-- [ ] Human review form. *(Deferred to Phase 7: it reviews real run results.)*
+- [x] Per-case result table and detail view.
+- [x] Human review form.
 - [x] Empty/no-run and completed-with-errors states. *(No-run state shown; completed-with-errors status label is ready.)*
 
 ### 3E. Settings
@@ -180,20 +180,20 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Set up FastAPI application, routers, Pydantic schemas, settings, logging, CORS, and the standard error handler (including `VALIDATION_ERROR`). *(Partly done in Phase 1: app, `/api/v1` router, health schema, settings, logging, CORS, `VALIDATION_ERROR` and `INTERNAL_ERROR` handlers. Remaining: feature routers and schemas.)*
-- [ ] Set up the SQLite schema with migrations or controlled initialisation; enable WAL, foreign keys, and busy timeout. *(Partly done in Phase 1: WAL, foreign keys and busy timeout. Remaining: the schema tables.)*
-- [ ] Load the embedding model once in the lifespan startup; report `starting` until loaded.
-- [ ] Initialise the ChromaDB collection through `PersistentClient` with cosine space and model/dimension metadata; pin the tested `chromadb` version; implement the mismatch guard (D-26).
-- [ ] Implement startup recovery for interrupted jobs.
-- [ ] Implement the single-thread ingestion executor.
-- [ ] Implement synchronous upload validation (type, size, signature, SHA-256 duplicate → 409, parseability) before queuing.
-- [ ] Implement PyMuPDF page-by-page extraction and `document_pages` diagnostics.
-- [ ] Detect no-text documents (`needs_ocr`) and low-text pages (`completed_with_warnings`); set the final `MIN_PAGE_TEXT_CHARS` from the synthetic corpus and record it (D-25).
-- [ ] Implement token-aware per-page chunking with the embedding tokenizer and limit validation.
-- [ ] Generate embeddings off the event loop and index them with metadata.
-- [ ] Implement upload, list, detail, job status, reprocess (new job), and deletion endpoints per the schema.
-- [ ] Load seed datasets at startup (needed for Phase 6 calibration). *(The seed format model `app/schemas/evaluation_dataset.py` and its tests exist; the startup loader and tables remain.)*
-- [ ] Add unit and integration tests for ingestion, reprocess, deletion, guard, and recovery.
+- [x] Set up FastAPI application, routers, Pydantic schemas, settings, logging, CORS, and the standard error handler (including `VALIDATION_ERROR`).
+- [x] Set up the SQLite schema with migrations or controlled initialisation; enable WAL, foreign keys, and busy timeout.
+- [x] Load the embedding model once in the lifespan startup; report `starting` until loaded.
+- [x] Initialise the ChromaDB collection through `PersistentClient` with cosine space and model/dimension metadata; pin the tested `chromadb` version; implement the mismatch guard (D-26).
+- [x] Implement startup recovery for interrupted jobs.
+- [x] Implement the single-thread ingestion executor.
+- [x] Implement synchronous upload validation (type, size, signature, SHA-256 duplicate → 409, parseability) before queuing.
+- [x] Implement PyMuPDF page-by-page extraction and `document_pages` diagnostics.
+- [x] Detect no-text documents (`needs_ocr`) and low-text pages (`completed_with_warnings`); set the final `MIN_PAGE_TEXT_CHARS` from the synthetic corpus and record it (D-25).
+- [x] Implement token-aware per-page chunking with the embedding tokenizer and limit validation.
+- [x] Generate embeddings off the event loop and index them with metadata.
+- [x] Implement upload, list, detail, job status, reprocess (new job), and deletion endpoints per the schema.
+- [x] Load seed datasets at startup (needed for Phase 6 calibration).
+- [x] Add unit and integration tests for ingestion, reprocess, deletion, guard, and recovery.
 
 Exit criteria:
 
@@ -209,13 +209,13 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Implement the common event envelope (schema §6.1) and `event_service` (persist first, then notify).
-- [ ] Persist job status and stage information in SQLite.
-- [ ] Implement the SSE endpoint for document jobs with `Last-Event-ID` / `last_event_id` replay.
-- [ ] Implement heartbeat comments and terminal events.
-- [ ] Implement `GET /jobs/{id}` with derived stage states for refresh/reconnect recovery.
-- [ ] Connect the React upload flow to the real event stream.
-- [ ] Handle reconnect, failed jobs, interrupted jobs, and missing event stream gracefully.
+- [x] Implement the common event envelope (schema §6.1) and `event_service` (persist first, then notify).
+- [x] Persist job status and stage information in SQLite.
+- [x] Implement the SSE endpoint for document jobs with `Last-Event-ID` / `last_event_id` replay.
+- [x] Implement heartbeat comments and terminal events.
+- [x] Implement `GET /jobs/{id}` with derived stage states for refresh/reconnect recovery.
+- [x] Connect the React upload flow to the real event stream.
+- [x] Handle reconnect, failed jobs, interrupted jobs, and missing event stream gracefully.
 
 Exit criteria:
 
@@ -229,20 +229,20 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Implement the shared, non-persisting `rag_pipeline`.
-- [ ] Implement query embedding with the same Sentence Transformers model.
-- [ ] Implement ChromaDB top-k retrieval restricted to searchable documents, returning distances/metadata.
-- [ ] Calibrate the evidence threshold using the Phase 0 labelled dataset; record the value, method, and dataset version in the decision log, and document the calibration/evaluation overlap as a limitation (D-24). Until then, run with the threshold unset and the uncalibrated notice visible.
-- [ ] Implement context packing with `S1…Sn` labels and prompt construction with untrusted-evidence delimiting.
-- [ ] Add Groq integration using backend-only `GROQ_API_KEY` and configurable `GROQ_MODEL` (initially `openai/gpt-oss-20b`) with strict JSON Schema structured output; exclude and never persist reasoning output; confirm with a live smoke test (D-23); use the non-strict fallback only if strict mode is unsupported (DD-27).
-- [ ] Implement structured-output parsing and the citation validation rules (schema §7.3).
-- [ ] Add timeouts, rate-limit handling, and provider error mapping.
-- [ ] Implement the insufficient-evidence outcome as HTTP 200 with abstention reasons.
-- [ ] Persist queries and all retrieval candidates with cited flags.
-- [ ] Implement `GET /queries` (history), `GET /queries/{id}`, and query SSE events.
-- [ ] Implement startup recovery for interrupted queries.
-- [ ] Connect the React assistant to the live API.
-- [ ] Add tests with a mocked Groq client and a manual live smoke test.
+- [x] Implement the shared, non-persisting `rag_pipeline`.
+- [x] Implement query embedding with the same Sentence Transformers model.
+- [x] Implement ChromaDB top-k retrieval restricted to searchable documents, returning distances/metadata.
+- [x] Calibrate the evidence threshold using the Phase 0 labelled dataset; record the value, method, and dataset version in the decision log, and document the calibration/evaluation overlap as a limitation (D-24). Until then, run with the threshold unset and the uncalibrated notice visible.
+- [x] Implement context packing with `S1…Sn` labels and prompt construction with untrusted-evidence delimiting.
+- [x] Add Groq integration using backend-only `GROQ_API_KEY` and configurable `GROQ_MODEL` (initially `openai/gpt-oss-20b`) with strict JSON Schema structured output; exclude and never persist reasoning output; confirm with a live smoke test (D-23); use the non-strict fallback only if strict mode is unsupported (DD-27).
+- [x] Implement structured-output parsing and the citation validation rules (schema §7.3).
+- [x] Add timeouts, rate-limit handling, and provider error mapping.
+- [x] Implement the insufficient-evidence outcome as HTTP 200 with abstention reasons.
+- [x] Persist queries and all retrieval candidates with cited flags.
+- [x] Implement `GET /queries` (history), `GET /queries/{id}`, and query SSE events.
+- [x] Implement startup recovery for interrupted queries.
+- [x] Connect the React assistant to the live API.
+- [x] Add tests with a mocked Groq client and a manual live smoke test.
 
 Exit criteria:
 
@@ -258,20 +258,20 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Review and, if needed, extend the Phase 0 dataset (a change requires a new dataset version).
-- [ ] Implement preflight (documents referenced by the dataset are indexed, one run at a time, no active processing job).
-- [ ] Block upload, reprocess, and delete while a run is active (`409 EVALUATION_IN_PROGRESS`), and expose `activity` in `GET /health` (DD-02).
-- [ ] Execute cases sequentially through the shared pipeline without writing `queries` rows.
-- [ ] Implement the evaluation retry policy (at most 3 attempts in total for transient Groq failures; 1 s / 2 s waits; honour `Retry-After` up to `GROQ_MAX_RETRY_WAIT_SECONDS` = 15) and the `infrastructure` / `pipeline` failure types (D-27).
-- [ ] Implement retrieval calculations at the unique (document, page) level: Precision@k, Recall@k, and MRR.
-- [ ] Implement rule-based abstention correctness, citation source match, and prompt-injection checks.
-- [ ] Record retrieval, generation, and end-to-end latency.
-- [ ] Persist evaluation runs, per-case results with execution status and errors, and retrieved excerpts.
-- [ ] Implement `completed_with_errors` and interrupted-run recovery.
-- [ ] Implement evaluation SSE progress events.
-- [ ] Implement the human review endpoint and read-time human-review aggregates.
-- [ ] Connect the Evaluation page to real results and the review form.
-- [ ] Display sample count, metric definition, and scoring method.
+- [x] Review and, if needed, extend the Phase 0 dataset (a change requires a new dataset version).
+- [x] Implement preflight (documents referenced by the dataset are indexed, one run at a time, no active processing job).
+- [x] Block upload, reprocess, and delete while a run is active (`409 EVALUATION_IN_PROGRESS`), and expose `activity` in `GET /health` (DD-02).
+- [x] Execute cases sequentially through the shared pipeline without writing `queries` rows.
+- [x] Implement the evaluation retry policy (at most 3 attempts in total for transient Groq failures; 1 s / 2 s waits; honour `Retry-After` up to `GROQ_MAX_RETRY_WAIT_SECONDS` = 15) and the `infrastructure` / `pipeline` failure types (D-27).
+- [x] Implement retrieval calculations at the unique (document, page) level: Precision@k, Recall@k, and MRR.
+- [x] Implement rule-based abstention correctness, citation source match, and prompt-injection checks.
+- [x] Record retrieval, generation, and end-to-end latency.
+- [x] Persist evaluation runs, per-case results with execution status and errors, and retrieved excerpts.
+- [x] Implement `completed_with_errors` and interrupted-run recovery.
+- [x] Implement evaluation SSE progress events.
+- [x] Implement the human review endpoint and read-time human-review aggregates.
+- [x] Connect the Evaluation page to real results and the review form.
+- [x] Display sample count, metric definition, and scoring method.
 
 Exit criteria:
 
@@ -301,10 +301,10 @@ Do not introduce agents, MCP, conversation memory, or complex orchestration with
 
 Tasks:
 
-- [ ] Run backend unit and integration tests.
-- [ ] Run frontend lint/type checks and tests.
-- [ ] Run Playwright end-to-end flows.
-- [ ] Inspect screenshots at supported viewports.
+- [x] Run backend unit and integration tests.
+- [x] Run frontend lint/type checks and tests.
+- [x] Run Playwright end-to-end flows.
+- [x] Inspect screenshots at supported viewports.
 - [ ] Verify reduced-motion and keyboard accessibility.
 - [ ] Test invalid files, duplicates, empty documents, API outages, Groq timeouts, rate limits, SSE disconnects, and server restarts mid-job.
 - [ ] Verify no secrets, uploads, or local databases are committed.
@@ -363,18 +363,18 @@ Do not accept "implemented" as proof that a feature works. Verify it through tes
 ## 16. Final POC acceptance checklist
 
 - [ ] Documentation is complete and consistent.
-- [ ] React app and FastAPI backend start locally.
-- [ ] A PDF can be uploaded, validated, extracted, chunked, embedded, and indexed; duplicates are rejected.
-- [ ] Document timeline shows actual processing events and recovers after refresh.
-- [ ] Documents can be reprocessed (new job) and deleted according to the rules.
-- [ ] A user can ask a natural-language question and see query history.
-- [ ] Groq generates a structured answer from retrieved context.
-- [ ] Citations show only validated cited sources and point to real retrieved document/page metadata; retrieval details are shown separately.
-- [ ] Unsupported questions receive an insufficient-evidence response (HTTP 200).
-- [ ] Query timeline shows actual stages and timings.
-- [ ] Evaluation runs against the versioned labelled dataset without affecting query statistics.
-- [ ] Retrieval and answer metrics are displayed with sample counts and scoring methods; human reviews can be recorded.
-- [ ] UI is responsive, accessible, and visually consistent.
-- [ ] Playwright and backend tests pass for the core flows.
-- [ ] Secrets and local runtime data are excluded from Git.
+- [x] React app and FastAPI backend start locally.
+- [x] A PDF can be uploaded, validated, extracted, chunked, embedded, and indexed; duplicates are rejected.
+- [x] Document timeline shows actual processing events and recovers after refresh.
+- [x] Documents can be reprocessed (new job) and deleted according to the rules.
+- [x] A user can ask a natural-language question and see query history.
+- [x] Groq generates a structured answer from retrieved context.
+- [x] Citations show only validated cited sources and point to real retrieved document/page metadata; retrieval details are shown separately.
+- [x] Unsupported questions receive an insufficient-evidence response (HTTP 200).
+- [x] Query timeline shows actual stages and timings.
+- [x] Evaluation runs against the versioned labelled dataset without affecting query statistics.
+- [x] Retrieval and answer metrics are displayed with sample counts and scoring methods; human reviews can be recorded.
+- [x] UI is responsive, accessible, and visually consistent.
+- [x] Playwright and backend tests pass for the core flows.
+- [x] Secrets and local runtime data are excluded from Git.
 - [ ] Demo script, reset procedure, and known limitations are documented.

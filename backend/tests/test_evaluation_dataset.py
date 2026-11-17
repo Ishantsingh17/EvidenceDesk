@@ -118,9 +118,7 @@ def test_v100_is_unchanged_and_does_not_match_the_schema() -> None:
         (lambda d: d["cases"][0].update(case_id="X"), "Extra inputs"),
         (lambda d: d["cases"][0].update(expected_behavior="clarify"), "expected_behavior"),
         (
-            lambda d: d["cases"][13]["expected_sources"].append(
-                {"document_key": "ap_sop", "page_number": 1}
-            ),
+            lambda d: d["cases"][13]["expected_sources"].append({"document_key": "ap_sop", "page_number": 1}),
             "abstain",
         ),
         (

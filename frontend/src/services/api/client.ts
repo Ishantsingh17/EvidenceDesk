@@ -82,6 +82,7 @@ export const apiGet = <T>(path: string, signal?: AbortSignal) => request<T>('GET
 export const apiPost = <T>(path: string, body?: unknown) => request<T>('POST', path, { body })
 export const apiUpload = <T>(path: string, formData: FormData) =>
   request<T>('POST', path, { formData })
+export const apiPut = <T>(path: string, body: unknown) => request<T>('PUT', path, { body })
 export const apiDelete = <T>(path: string) => request<T>('DELETE', path)
 
 /**

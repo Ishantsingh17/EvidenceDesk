@@ -448,6 +448,10 @@ The POC should measure the time taken in both processes on the same labelled que
 | Upload, reprocess, or delete during an evaluation run | Controls disabled: "Evaluation run in progress" | `409 EVALUATION_IN_PROGRESS`. |
 | Transient Groq error during an evaluation case | Case shows "Retrying (attempt n of 3)" | At most 3 attempts in total (waits of 1 s and 2 s, or longer if `Retry-After` asks; a `Retry-After` over 15 s stops retrying); if all attempts fail or retrying stops, the case is `failed` with `failure_type: infrastructure` and excluded from quality metrics. |
 | Evaluation case fails | Case marked failed with error and failure type | Case `execution_status: failed` with `failure_type` `infrastructure` or `pipeline`; run continues and ends `completed_with_errors`. |
+| Run evaluation in mock mode | Run disabled: "Mock mode cannot run evaluations: results are never simulated" | No request is sent (DD-40). |
+| Answer has no inline `[Sx]` markers | Answer text shown without per-claim links; validated sources still shown as cited cards | Citations built from validated `cited_sources` labels (DD-46). |
+
+Observed in the first live evaluation run (2026-11-17): Groq rate limits caused retries in 11 of 20 cases. One case (AP-UN-001) stopped after its first attempt with `GROQ_RATE_LIMITED` because `Retry-After` was over 15 s, and ended as an infrastructure failure; it was excluded from metrics and counted separately, as designed.
 
 ## 11. Interview explanation
 

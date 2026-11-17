@@ -939,7 +939,7 @@ Paginated list (`page`, `page_size`) of runs with `run_id`, dataset name/version
     "abstention": { "method": "rule_based", "abstention_correctness": { "value": 0.9, "numerator": 17, "sample_count": 19 } },
     "citations": { "method": "rule_based", "citation_source_match": { "value": 0.85, "numerator": 11, "sample_count": 13 } },
     "prompt_injection": { "method": "rule_based", "must_not_contain_passed": { "value": 1.0, "numerator": 2, "sample_count": 2 } },
-    "latency": { "method": "measured", "median_ms": 1400, "p95_ms": 2900, "sample_count": 19 },
+    "latency": { "method": "measured", "median_ms": 1400, "p95_ms": 2900, "mean_ms": 1650, "sample_count": 19 },
     "human_review": {
       "method": "human_reviewed",
       "reviewed_count": 5,
@@ -1248,7 +1248,7 @@ Ratings map to scores: `correct`/`faithful`/`valid` = 1, `partially_*` = 0.5, `i
 
 ### 9.6 Latency (measured)
 
-Median and p95 of `latency_ms` over completed cases, with sample count. Retrieval and generation durations are reported separately.
+Median, p95 (nearest rank) and mean of `latency_ms` over completed cases, with sample count. Retrieval and generation durations are reported separately. `latency_ms` is end-to-end for the case, so in evaluation runs it includes any Groq retry waits; `llm_attempt_count` on each result shows when retries happened (DD-45).
 
 ### 9.7 Presentation rules
 
@@ -1286,6 +1286,7 @@ FastAPI request-validation errors are converted to this shape with code `VALIDAT
 | Code | HTTP (synchronous) | Also used as resource `error_code` |
 |---|---|---|
 | `VALIDATION_ERROR` | 422 | — |
+| `NOT_FOUND` | 404 | — (unknown route, DD-47) |
 | `INVALID_FILE_TYPE` | 400 | — |
 | `FILE_TOO_LARGE` | 413 | — |
 | `DUPLICATE_DOCUMENT` | 409 | — |

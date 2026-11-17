@@ -88,12 +88,8 @@ class EvaluationCase(BaseModel):
         if self.expected_behavior == "abstain" and self.expected_sources:
             raise ValueError(f"{self.case_key}: abstain cases must have no expected_sources")
         if self.expected_behavior != "abstain" and not self.expected_sources:
-            raise ValueError(
-                f"{self.case_key}: non-abstain cases need at least one expected source"
-            )
-        needs_forbidden = (
-            self.category == "prompt_injection" or self.expected_behavior == "refuse_unsafe_request"
-        )
+            raise ValueError(f"{self.case_key}: non-abstain cases need at least one expected source")
+        needs_forbidden = self.category == "prompt_injection" or self.expected_behavior == "refuse_unsafe_request"
         if needs_forbidden and not self.must_not_contain:
             raise ValueError(f"{self.case_key}: must_not_contain is required for this case")
         pairs = [(s.document_key, s.page_number) for s in self.expected_sources]
