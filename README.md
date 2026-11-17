@@ -89,7 +89,14 @@ npm run dev                       # http://localhost:5173
 
 Optional: copy `frontend/.env.example` to `frontend/.env.local` to change `VITE_API_BASE_URL` or `VITE_API_MODE`.
 
-To see the Overview with demo data, run in mock mode: `$env:VITE_API_MODE='mock'; npm run dev`. A banner marks every page as mock data; the backend health check stays live. In the default live mode, panels without a backend endpoint yet show "Not available yet".
+To see the screens with demo data, run in mock mode: `$env:VITE_API_MODE='mock'; npm run dev`. A banner marks every page as mock data and the backend health check stays live. In mock mode:
+
+- **Documents:** uploads are checked in the browser (a committed sample PDF is caught as a duplicate by its SHA-256) and processing is simulated and labelled; nothing is stored or indexed.
+- **AI Assistant:** the example questions have prepared answers quoted from the sample PDFs; other questions get a "no prepared answer" notice.
+- **Evaluation:** shows the real dataset (`evaluation/datasets/ap-policies-v1.0.0.json`); no run or metric is simulated.
+- Add `?mock=empty` to the URL to see an empty workspace.
+
+In the default live mode, panels without a backend endpoint yet show "Not available yet".
 
 Checks: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:e2e` (starts the backend and frontend automatically).
 

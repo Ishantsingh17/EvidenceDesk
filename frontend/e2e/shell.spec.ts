@@ -45,14 +45,6 @@ test('sidebar navigates to every page and marks the active item', async ({ page 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('welcome to EvidenceDesk AI')
 })
 
-test('planned screens say they are not built yet', async ({ page }) => {
-  await page.goto('/assistant')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('AI Assistant')
-  await expect(page.getByText('The AI Assistant screen is not built yet')).toBeVisible()
-  await page.getByRole('link', { name: 'Back to overview' }).click()
-  await expect(page).toHaveURL(/\/dashboard$/)
-})
-
 test('keyboard users can skip to content and reach navigation', async ({ page }) => {
   await page.goto('/dashboard')
   await page.keyboard.press('Tab')
@@ -111,13 +103,23 @@ test('workspace menu opens and links to settings', async ({ page }) => {
 })
 
 for (const width of [1440, 1280, 768, 390]) {
-  test(`layout has no horizontal overflow at ${width}px`, async ({ page }) => {
+  test(`no horizontal overflow on any page at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/dashboard')
     await expect(page.getByTestId('kpi-documents')).toBeVisible()
     await expectNoHorizontalScroll(page)
     const sidebarVisible = await page.getByRole('navigation', { name: 'Main' }).isVisible()
     expect(sidebarVisible).toBe(width >= 1024)
+    for (const [path, ready] of [
+      ['/documents', 'document-row'],
+      ['/assistant', 'example-questions'],
+      ['/evaluations', 'category-table'],
+      ['/settings', 'backend-indicator'],
+    ] as const) {
+      await page.goto(path)
+      await expect(page.getByTestId(ready).first()).toBeVisible()
+      await expectNoHorizontalScroll(page)
+    }
   })
 }
 

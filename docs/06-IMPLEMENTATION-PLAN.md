@@ -53,14 +53,14 @@ Tasks:
 - [x] Add root `CLAUDE.md` with project rules and instructions.
 - [x] Add root `README.md` with a short project overview and setup outline.
 - [x] Add `docs/07-DECISION-LOG.md`.
-- [ ] Move the project folder outside OneDrive (D-21), done by the developer before Phase 1.
-- [ ] Create the project Git repository.
+- [x] Move the project folder outside OneDrive (D-21), done by the developer before Phase 1. *(Verified: project root is `C:\Projects\EvidenceDeskAI`.)*
+- [x] Create the project Git repository. *(First commit 9af4d9d, 2026-11-16.)*
 - [x] Create the top-level folders: `frontend/`, `backend/`, `sample-corpus/`, `evaluation/datasets/`.
 - [x] Add `.gitignore` for `.env`, `data/`, logs, build folders, and virtual environments. Do **not** ignore `sample-corpus/` or `evaluation/datasets/`.
-- [ ] Write the synthetic sample corpus (§13) and commit the final PDFs in `sample-corpus/`, clearly labelled as fictional. PDFs may be authored and exported manually or generated with a PyMuPDF script; no additional dependency is required.
-- [ ] Compute and record SHA-256 hashes of the committed corpus files.
-- [ ] Write the versioned seed dataset `evaluation/datasets/ap-policies-v1.0.0.json` (format: schema §8) with 15–20 cases covering every category: `direct`, `multi_document`, `ambiguous`, `conflicting_documents`, `unanswerable`, `out_of_scope`, `prompt_injection`.
-- [ ] Write the human review rubric (correctness, faithfulness, citation validity) alongside the dataset.
+- [x] Write the synthetic sample corpus (§13) and commit the final PDFs in `sample-corpus/`, clearly labelled as fictional. PDFs may be authored and exported manually or generated with a PyMuPDF script; no additional dependency is required. *(7 PDFs, commit 819a596.)*
+- [x] Compute and record SHA-256 hashes of the committed corpus files. *(`evaluation/corpus-hashes.sha256`; re-verified 2026-11-17.)*
+- [x] Write the versioned seed dataset `evaluation/datasets/ap-policies-v1.0.0.json` (format: schema §8) with 15–20 cases covering every category: `direct`, `multi_document`, `ambiguous`, `conflicting_documents`, `unanswerable`, `out_of_scope`, `prompt_injection`. *(20 cases, commit 819a596. Its field names and two `expected_behavior` values differ from schema §8; open item OI-09.)*
+- [x] Write the human review rubric (correctness, faithfulness, citation validity) alongside the dataset. *(`evaluation/HUMAN-REVIEW-GUIDE.md`.)*
 
 Exit criteria:
 
@@ -125,47 +125,47 @@ The mock adapter is selected only by `VITE_API_MODE=mock`, returns data shaped e
 
 ### 3A. Overview Dashboard
 
-- [ ] KPI cards (user queries only; latency with sample count).
-- [ ] Recent documents.
-- [ ] Recent queries.
-- [ ] Latest evaluation summary.
-- [ ] Empty workspace state.
+- [x] KPI cards (user queries only; latency with sample count).
+- [x] Recent documents.
+- [x] Recent queries.
+- [x] Latest evaluation summary. *(Shows "Not run yet" until a real run exists.)*
+- [x] Empty workspace state.
 
 ### 3B. Document Library
 
-- [ ] Drag-and-drop/browse upload area with an independent per-file upload queue.
-- [ ] Per-file errors including duplicate (409).
-- [ ] Document table, filename search, and status filter.
-- [ ] Status badges.
-- [ ] Document detail panel with page diagnostics.
-- [ ] Reprocess and delete actions with disabled reasons and delete confirmation.
-- [ ] Processing timeline with simulated events, clearly marked as mock data during this phase.
+- [x] Drag-and-drop/browse upload area with an independent per-file upload queue.
+- [x] Per-file errors including duplicate (409).
+- [x] Document table, filename search, and status filter.
+- [x] Status badges.
+- [x] Document detail panel with page diagnostics.
+- [x] Reprocess and delete actions with disabled reasons and delete confirmation.
+- [x] Processing timeline with simulated events, clearly marked as mock data during this phase.
 
 ### 3C. AI Assistant
 
-- [ ] Question/answer layout with the "independent questions" note.
-- [ ] Question composer.
-- [ ] Query history list.
-- [ ] Query processing timeline (including skipped stages).
-- [ ] Answer rendering with inline citation markers.
-- [ ] Citation cards and evidence panel.
-- [ ] Retrieval details panel.
-- [ ] Flagged-for-review, insufficient-evidence, uncalibrated-threshold, and provider-error states.
+- [x] Question/answer layout with the "independent questions" note.
+- [x] Question composer.
+- [x] Query history list.
+- [x] Query processing timeline (including skipped stages). *(Skipped state is supported; the prepared mock answers never skip a stage.)*
+- [x] Answer rendering with inline citation markers.
+- [x] Citation cards and evidence panel.
+- [x] Retrieval details panel.
+- [x] Flagged-for-review, insufficient-evidence, uncalibrated-threshold, and provider-error states.
 
 ### 3D. Evaluation Dashboard
 
-- [ ] Dataset selector and corpus readiness.
-- [ ] Evaluation run controls.
-- [ ] Metric cards grouped by method, with sample counts.
-- [ ] Recharts visualisations.
-- [ ] Per-case result table and detail view.
-- [ ] Human review form.
-- [ ] Empty/no-run and completed-with-errors states.
+- [x] Dataset selector and corpus readiness. *(One dataset exists, so it is shown directly rather than in a selector.)*
+- [x] Evaluation run controls. *("Run evaluation" is disabled with a reason until the Phase 7 engine exists.)*
+- [x] Metric cards grouped by method, with sample counts. *(All "Not run yet"; no values are invented.)*
+- [x] Recharts visualisations. *(Dataset cases per category; result charts need real runs.)*
+- [ ] Per-case result table and detail view. *(Deferred to Phase 7: results cannot be shown without inventing them.)*
+- [ ] Human review form. *(Deferred to Phase 7: it reviews real run results.)*
+- [x] Empty/no-run and completed-with-errors states. *(No-run state shown; completed-with-errors status label is ready.)*
 
 ### 3E. Settings
 
-- [ ] Non-secret backend/model status, including model mismatch.
-- [ ] Safe configuration display, including threshold calibration status.
+- [x] Non-secret backend/model status, including model mismatch.
+- [x] Safe configuration display, including threshold calibration status.
 
 Exit criteria:
 
@@ -180,8 +180,8 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Set up FastAPI application, routers, Pydantic schemas, settings, logging, CORS, and the standard error handler (including `VALIDATION_ERROR`).
-- [ ] Set up the SQLite schema with migrations or controlled initialisation; enable WAL, foreign keys, and busy timeout.
+- [ ] Set up FastAPI application, routers, Pydantic schemas, settings, logging, CORS, and the standard error handler (including `VALIDATION_ERROR`). *(Partly done in Phase 1: app, `/api/v1` router, health schema, settings, logging, CORS, `VALIDATION_ERROR` and `INTERNAL_ERROR` handlers. Remaining: feature routers and schemas.)*
+- [ ] Set up the SQLite schema with migrations or controlled initialisation; enable WAL, foreign keys, and busy timeout. *(Partly done in Phase 1: WAL, foreign keys and busy timeout. Remaining: the schema tables.)*
 - [ ] Load the embedding model once in the lifespan startup; report `starting` until loaded.
 - [ ] Initialise the ChromaDB collection through `PersistentClient` with cosine space and model/dimension metadata; pin the tested `chromadb` version; implement the mismatch guard (D-26).
 - [ ] Implement startup recovery for interrupted jobs.

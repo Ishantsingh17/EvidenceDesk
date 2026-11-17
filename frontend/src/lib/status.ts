@@ -71,3 +71,53 @@ export function healthStatus(status: HealthStatus): StatusPresentation {
       return { label: 'Degraded', tone: 'warning' }
   }
 }
+
+export function pageTextStatus(status: 'ok' | 'low_text' | 'no_text'): StatusPresentation {
+  switch (status) {
+    case 'ok':
+      return { label: 'Text found', tone: 'success' }
+    case 'low_text':
+      return { label: 'Low text', tone: 'warning' }
+    case 'no_text':
+      return { label: 'No text', tone: 'danger' }
+  }
+}
+
+/** Plain-language reason for a rejected upload (schema §5.3 error codes). */
+export function uploadErrorLabel(code: string): string {
+  switch (code) {
+    case 'INVALID_FILE_TYPE':
+      return 'Not a PDF'
+    case 'FILE_TOO_LARGE':
+      return 'File too large'
+    case 'DUPLICATE_DOCUMENT':
+      return 'Already uploaded'
+    case 'PDF_PARSE_FAILED':
+      return "Couldn't read PDF"
+    case 'EVALUATION_IN_PROGRESS':
+      return 'Evaluation running'
+    case 'NOT_AVAILABLE':
+      return 'Upload not available yet'
+    case 'NETWORK_ERROR':
+      return 'Backend unreachable'
+    default:
+      return 'Upload failed'
+  }
+}
+
+export function evaluationRunStatus(
+  status: 'queued' | 'running' | 'completed' | 'completed_with_errors' | 'failed',
+): StatusPresentation {
+  switch (status) {
+    case 'queued':
+      return { label: 'Queued', tone: 'neutral' }
+    case 'running':
+      return { label: 'Running', tone: 'info' }
+    case 'completed':
+      return { label: 'Completed', tone: 'success' }
+    case 'completed_with_errors':
+      return { label: 'Completed with errors', tone: 'warning' }
+    case 'failed':
+      return { label: 'Failed', tone: 'danger' }
+  }
+}

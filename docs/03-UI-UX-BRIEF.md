@@ -5,8 +5,8 @@
 | Field | Value |
 |---|---|
 | Document type | UI/UX Design Brief |
-| Version | 1.2 |
-| Status | Design system implemented in Phase 2A — revised 2026-11-17 (see `docs/07-DECISION-LOG.md` DD-34) |
+| Version | 1.3 |
+| Status | All five screens implemented on the mock adapter (Phase 2A/2B) — revised 2026-11-17 (see `docs/07-DECISION-LOG.md` DD-34 to DD-41) |
 | Design direction | Premium enterprise SaaS / intelligence workspace |
 
 ---
@@ -165,6 +165,8 @@ Timeline stage states: pending, active, completed, completed with warning, faile
 
 **States:** no documents, uploading, queued, processing, indexed, indexed with warnings, failed, needs OCR, duplicate detected (with link to the existing document), deletion incomplete, API unavailable.
 
+*Implemented in Phase 2B (DD-38):* upload card (drag-and-drop or browse, size limit from `GET /settings/status`) with a per-file queue; library table with filename search and status filter (stacks name + status on phones); detail drawer with metadata, copyable truncated hash, page diagnostics, and the latest job timeline (`GET /jobs/{id}`, or live events after Reprocess); Reprocess and Delete with disabled reasons and a confirmation dialog. In mock mode every simulated timeline shows a "Simulated events" notice, simulated uploads never enter the library, and delete affects only the browser session. The duplicate result names the existing document rather than linking to it.
+
 ### Screen 3: AI Assistant (`/assistant`)
 
 **Purpose:** Let users ask questions over indexed documents and inspect the evidence behind answers.
@@ -202,6 +204,8 @@ Only show stages that are genuinely implemented and send actual backend events. 
 
 **States:** waiting for input, processing, answer ready, answer flagged for review, insufficient evidence, no indexed documents, provider error, timeout, interrupted, connection lost/reconnecting.
 
+*Implemented in Phase 2B (DD-39):* composer with character count, Ctrl + Enter and the independence note; example questions from the dataset; a six-stage query timeline (sticky side panel on desktop, under the composer on smaller screens) that only advances on events and shows backend-measured durations; answer with `[S1]` markers that focus their citation card; cited-source cards (file, page, excerpt; "document no longer available" when deleted); collapsible retrieval details with cosine distance explained; flagged, insufficient-evidence, uncalibrated-threshold and failed notices; copy and feedback; history that reopens stored answers (also via `/assistant?query=<id>`). On mobile the evidence is stacked inline below the answer instead of opening as a sheet, which keeps citations next to the text they support.
+
 ### Screen 4: Evaluation (`/evaluations`)
 
 **Purpose:** Show how the application performs against a labelled test dataset.
@@ -226,6 +230,8 @@ Only show stages that are genuinely implemented and send actual backend events. 
 
 **Important:** Do not display made-up percentages, fake benchmark numbers, or an aggregate "AI accuracy" score without a documented definition. Show sample count and evaluation run date.
 
+*Implemented in Phase 2B (DD-40):* dataset panel (name, version, description, case count, a Recharts bar chart of cases per category with an adjacent table); corpus readiness per referenced file (hash, indexed or missing); "Run evaluation" disabled with the blocking reason; metric groups by method (rule-based, human-reviewed, measured) with definitions and "Not run yet"; empty run and case-result states. With one dataset, it is shown directly instead of in a selector. The per-case table, detail view and review form arrive with real runs in Phase 7.
+
 ### Screen 5: Settings (`/settings`)
 
 **Purpose:** Display non-secret application configuration and health information.
@@ -239,6 +245,8 @@ Only show stages that are genuinely implemented and send actual backend events. 
 - Theme preference is a stretch goal and is not shown in the MVP.
 
 **Security:** never display the Groq API key, full `.env`, secret values, local absolute file paths, or stack traces.
+
+*Implemented in Phase 2B:* read-only page (no inputs) with a notice explaining where values come from; Application (version, API mode, API base URL), live Backend health (status, activity, last check, Check now), Models and retrieval from `GET /settings/status` (environment, vector store with model-mismatch reset guidance, embedding model and dimension, language model, upload limit, top-k, evidence threshold or "Not yet calibrated"), and the privacy note.
 
 ## 6. Reusable component inventory
 

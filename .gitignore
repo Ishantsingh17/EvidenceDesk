@@ -30,6 +30,7 @@ chroma/
 # Testing and logs
 coverage/
 playwright-report/
+.playwright-mcp/
 test-results/
 blob-report/
 playwright/.cache/

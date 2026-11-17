@@ -91,7 +91,10 @@ Do not substitute a different framework, database, embedding provider, LLM provi
 - Every page: `PageContainer` + `PageHeader` (the only `h1`); panels use `h2`. Status labels always go through `lib/status.ts` + `StatusBadge` (icon + text + colour).
 - Data: screens fetch through `workspaceApi` (live or mock, chosen once from `VITE_API_MODE`) with `useAsync`; never import fixtures in components. Each data panel handles loading (skeleton), empty (`EmptyState`), error/not-available (`ErrorState`) and success. Panels showing mock data render `DemoDataTag`.
 - Backend health comes only from `useHealth()` (real `GET /health`, every mode).
-- Add a shadcn component only when a screen uses it (`npx shadcn@4.23.0 add <name>`); do not keep unused components.
+- Add a shadcn component only when a screen uses it (`npx shadcn@4.23.0 add <name>`); do not keep unused components. If the CLI asks to overwrite `button.tsx` (or any restyled primitive), answer no.
+- Shared building blocks: `StageTimeline` + `lib/timeline.ts` (`applyEvent`, `jobStages`, `queryStages`) for every processing timeline, `useEventTimeline` to follow an SSE `events_url`, `InlineNotice` for results/warnings/errors, `lib/evaluation.ts` for category labels and metric definitions.
+- New pages are lazy routes in `src/app/router.tsx` (`lazy: () => import(...)`); only the Overview loads eagerly.
+- Mock simulations (uploads, processing, reprocess, queries) must show `StageTimeline`'s `simulated` notice, must never add a simulated upload to the library, and mock answers may only quote real sample-corpus text (DD-38, DD-39). Evaluation results are never simulated (DD-40). `?mock=empty` gives an empty mock workspace.
 
 ### Animation guidelines
 

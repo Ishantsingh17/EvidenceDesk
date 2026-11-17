@@ -18,8 +18,10 @@
 
     /* Path alias (TS 7: no baseUrl; paths resolve from this file) */
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@evaluation/*": ["../evaluation/datasets/*"]
     },
+    "resolveJsonModule": true,
 
     /* Linting */
     "noUnusedLocals": true,

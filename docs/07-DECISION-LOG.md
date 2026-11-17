@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Document type | Architecture and product decision log |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Active |
 
 This log records approved decisions that change or clarify the baseline documents. When a decision here conflicts with older wording elsewhere, this log and `docs/04-BACKEND-SCHEMA.md` take precedence, and the conflicting document must be corrected.
@@ -125,6 +125,17 @@ Made under the product owner's Phase 2A brief (design system, application shell,
 | DD-36 | Approved (Phase 2A brief) | **Overview data.** The health check is real in both API modes. Other panels use `workspaceApi`, which is the mock adapter only when `VITE_API_MODE=mock`; mock panels carry a "Demo data" tag and the mock banner shows on every page. In live mode, panels whose endpoints do not exist yet show "Not available yet" (no fallback). The response-time KPI is the schema's **median** (with sample count), not an average. | Follows CLAUDE.md §4 and schema §5.2. | UI brief §5 Screen 1, schema §5.2 |
 | DD-37 | Approved (Phase 2A brief) | **Browser tests.** Playwright runs the backend plus two Vite dev servers: mock mode on `localhost:5173` (the CORS-allowed origin) and live mode on `localhost:5174` (used only to prove live mode never shows mock data). Each mode has its own Vite dependency cache. | Tests both modes without widening the backend CORS setting. | `frontend/playwright.config.ts`, `frontend/vite.config.ts` |
 
+## 3c. Phase 2B decisions (2026-11-17)
+
+Made under the product owner's Phase 2B brief (Documents, AI Assistant, Evaluation and Settings screens on the mock adapter).
+
+| ID | Status | Decision | Reason | Affected documents |
+|---|---|---|---|---|
+| DD-38 | Approved (Phase 2B brief) | **Mock simulations are always labelled and never pretend to index.** Mock uploads are checked in the browser (extension, size, `%PDF-` signature, real SHA-256 against the corpus hashes, so a committed sample PDF is rejected as a duplicate), then a simulated job plays the five stages with a "Simulated events" notice. A simulated upload is never added to the library. Mock reprocess is simulated and mock delete only changes the browser session (reload restores the fixtures). `?mock=empty` starts the mock workspace with no documents, for the empty-workspace state. | Phase 2B brief: never present simulated uploads as real indexing. | UI brief §5 Screen 2, `services/mock/` |
+| DD-39 | Approved (Phase 2B brief) | **Mock assistant answers only prepared dataset questions.** Seven questions from `ap-policies-v1.0.0.json` have prepared answers whose excerpts are quoted from the real sample-corpus text and whose citations reference only those excerpts; distances and durations are demo values. Any other question in mock mode returns the mock-only error code `MOCK_QUESTION_UNSUPPORTED` (not part of schema §10.1; never sent by the backend) instead of a made-up answer. | Phase 2B brief: use actual synthetic PDF content for demo answers and citations. | UI brief §5 Screen 3, `services/mock/demoAnswers.ts` |
+| DD-40 | Approved (Phase 2B brief) | **Evaluation shows the real dataset and no results.** The mock adapter reads the committed seed file for `GET /evaluations/datasets` (name, version, case and category counts, corpus). No run is simulated: "Run evaluation" is disabled with a reason, every metric shows "Not run yet", and the per-case result table and human-review form are deferred to Phase 7 because they need real results. | Phase 2B brief: do not invent evaluation metrics or results. | UI brief §5 Screen 4, Plan §6 |
+| DD-41 | Approved (Phase 2B brief) | **Code splitting.** Documents, AI Assistant, Evaluation and Settings are lazy-loaded routes; Overview stays eager. React/React Router and Radix/Motion are split into stable vendor chunks (Rolldown `codeSplitting`). Measured: before, one 661.40 kB JS chunk (213.93 kB gzip); after, the start page loads 718.5 kB (232.0 kB gzip) across four chunks for a much larger app, the largest is 380.69 kB (Evaluation, with Recharts, loaded only on that page) and no chunk exceeds 500 kB. | Phase 2B brief; removes the >500 kB build warning and keeps Recharts off the start page. | `frontend/src/app/router.tsx`, `frontend/vite.config.ts` |
+
 ## 4. Implementation-time calibration (values recorded during implementation)
 
 | Item | Phase | Status |
@@ -137,6 +148,10 @@ Made under the product owner's Phase 2A brief (design system, application shell,
 
 ## 5. Open items
 
-There are no open decisions. OI-01 to OI-08 are resolved by D-21 to D-28.
+OI-01 to OI-08 are resolved by D-21 to D-28.
 
-Nothing is awaiting approval. All derived decisions DD-01 to DD-37 are approved, except DD-16 (superseded). The only remaining items are the implementation-time calibration values in §4.
+| ID | Item | Detail | Needed before |
+|---|---|---|---|
+| OI-09 | Seed dataset format vs schema §8 / §2.8 | The committed `evaluation/datasets/ap-policies-v1.0.0.json` (20 cases) does not follow schema §8: it uses `dataset_id`, `corpus[].sha256`, `case_id`, `expected_sources[].page_numbers` and `expected_relevant_pages` instead of `documents[].file_hash`, `case_key` and `expected_sources[].{document_key, page_number}`. It also uses two `expected_behavior` values the schema does not allow: `clarify` (AP-AMB-001, AP-AMB-002) and `refuse_unsafe_request` (AP-PI-002); schema §2.8 allows only `answer`, `qualified_answer` and `abstain`. **Options:** (a) update schema §8 and §2.8 to accept the file as written (and decide how `clarify` and `refuse_unsafe_request` are scored for abstention correctness), or (b) publish `ap-policies-v1.1.0.json` in the schema format (DD-14: a changed seed file needs a new version). The frontend reads the file as written and only uses fields both formats share. | Phase 4 dataset loader |
+
+All derived decisions DD-01 to DD-41 are approved, except DD-16 (superseded). OI-09 awaits a product-owner decision. The remaining items are OI-09 and the implementation-time calibration values in §4.

@@ -82,9 +82,9 @@ export function RecentDocuments({
                         aria-hidden="true"
                         className="mt-0.5 size-4 shrink-0 text-muted-foreground sm:mt-0"
                       />
-                      <span className="min-w-0 space-y-1.5">
+                      <span className="flex min-w-0 flex-col items-start gap-1.5">
                         {/* Wraps on phones; truncates (full name on hover) on wider screens. */}
-                        <span className="block font-medium break-words sm:truncate" title={doc.filename}>
+                        <span className="block max-w-full leading-5 font-medium break-words sm:truncate" title={doc.filename}>
                           {doc.filename}
                         </span>
                         <StatusBadge status={documentStatus(doc)} className="sm:hidden" />

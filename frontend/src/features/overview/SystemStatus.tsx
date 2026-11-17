@@ -50,7 +50,7 @@ function processingRow(state: HealthState): StatusRowData {
   }
   return {
     status: { label: 'Idle', tone: 'neutral' },
-    detail: 'No processing jobs running. Uploading is not available in this build yet.',
+    detail: 'No processing jobs running.',
   }
 }
 

@@ -32,3 +32,15 @@ export function greetingFor(now: Date): string {
   const part = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
   return `${part}, welcome to EvidenceDesk AI`
 }
+
+/** Bytes as KB/MB, e.g. 5162 -> "5.0 KB". */
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+/** First and last characters of a long hash, e.g. "e5f0adff…2ad4da4". */
+export function truncateHash(hash: string, keep = 8): string {
+  return hash.length <= keep * 2 ? hash : `${hash.slice(0, keep)}…${hash.slice(-keep)}`
+}
