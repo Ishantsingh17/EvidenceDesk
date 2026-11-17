@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Document type | Architecture and product decision log |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Active |
 
 This log records approved decisions that change or clarify the baseline documents. When a decision here conflicts with older wording elsewhere, this log and `docs/04-BACKEND-SCHEMA.md` take precedence, and the conflicting document must be corrected.
@@ -114,6 +114,17 @@ These resolve open items OI-01 to OI-08 and were approved by the product owner o
 | DD-32 | Approved (records licensing position) | **PyMuPDF licensing.** `pymupdf==2.1` (Artifex) is dual-licensed: **GNU AGPL-3.0** or an **Artifex commercial licence**. This POC uses it under AGPL-3.0, which is acceptable for a local, non-distributed academic/interview demonstration. Distributing the software, or offering it to users over a network, would require meeting AGPL-3.0 (publishing the complete source under AGPL) or buying a commercial licence; this must be reviewed before any such use. PyMuPDF 2.x also installs `pymupdf_layout==2.1` and `pymupdf4llm==2.1`: these are **empty compatibility packages** (metadata only, no code) that exist to prevent a pip upgrade bug from 1.x. Their former code now ships inside the `pymupdf` wheel itself (its `pymupdf/` and `pymupdf4llm/` folders, with AGPL-3.0 source headers), so it is covered by the same dual licence. The `pymupdf` wheel also requires `onnxruntime` (MIT). None of these packages is removed. The licence notice is kept in `THIRD_PARTY_NOTICES.md`. | The add-on packages show no licence in their metadata; inspection showed they contain no code. | `THIRD_PARTY_NOTICES.md`, README, CLAUDE.md §9 |
 | DD-33 | Approved (accepted dev-only risk) | **npm audit (2026-11-17): 4 moderate findings, development tooling only.** One advisory, GHSA-g3hv-75wg-m249 (minimatch 7.0.0–11.0.0, denial of service through crafted glob patterns), reported along the chain `shadcn@4.23.0` → `ts-morph@26.0.0` → `@ts-morph/common@0.27.0` → `minimatch@10.2.6`. `shadcn` is a dev dependency (the CLI, plus a CSS file read at build time); the built app contains no code from this chain, and `npm audit --omit=dev` reports 0 vulnerabilities. The risk is accepted because the CLI only processes the project's own glob patterns. No `npm audit fix --force` (it would downgrade shadcn to 1.0.0) and no forced overrides. Recheck when shadcn releases a version that depends on a fixed `ts-morph`. | Runtime code is unaffected; a forced fix would break the approved shadcn setup. | README, CLAUDE.md §9 |
 
+## 3b. Phase 2A decisions (2026-11-17)
+
+Made under the product owner's Phase 2A brief (design system, application shell, Overview), within the freedom the UI brief gives to refine tokens.
+
+| ID | Status | Decision | Reason | Affected documents |
+|---|---|---|---|---|
+| DD-34 | Approved (Phase 2A brief) | **Design system.** Typeface IBM Plex Sans (replaces the shadcn default Geist; one family). Token refinements: ink-blue sidebar `#0E1626`, foreground `#131A2B`, darker muted text `#5B6478` for AA contrast, new `--evidence` teal accent, soft status tints, radii 12px (panels) / 8px (controls). Final values and the shadcn variable mapping are in UI brief §3.1. | Gives EvidenceDesk AI its own identity while keeping the brief's roles and contrast rules. | UI brief §3.1–3.3, `frontend/src/index.css` |
+| DD-35 | Approved (Phase 2A brief) | **Routing and shell.** `react-router` 8.5.1 (named in TRD §5.1) with `/` → `/dashboard`. Screens not built yet have working routes with an honest "not built yet" page. The top bar has no user profile (UI brief §4.1 forbids an auth-implying profile) and no search (no search feature exists); it shows a live backend indicator and a "Local workspace" menu instead. | Navigation never dead-ends and no control pretends to work. | UI brief §4.1, TRD §5.1 |
+| DD-36 | Approved (Phase 2A brief) | **Overview data.** The health check is real in both API modes. Other panels use `workspaceApi`, which is the mock adapter only when `VITE_API_MODE=mock`; mock panels carry a "Demo data" tag and the mock banner shows on every page. In live mode, panels whose endpoints do not exist yet show "Not available yet" (no fallback). The response-time KPI is the schema's **median** (with sample count), not an average. | Follows CLAUDE.md §4 and schema §5.2. | UI brief §5 Screen 1, schema §5.2 |
+| DD-37 | Approved (Phase 2A brief) | **Browser tests.** Playwright runs the backend plus two Vite dev servers: mock mode on `localhost:5173` (the CORS-allowed origin) and live mode on `localhost:5174` (used only to prove live mode never shows mock data). Each mode has its own Vite dependency cache. | Tests both modes without widening the backend CORS setting. | `frontend/playwright.config.ts`, `frontend/vite.config.ts` |
+
 ## 4. Implementation-time calibration (values recorded during implementation)
 
 | Item | Phase | Status |
@@ -128,4 +139,4 @@ These resolve open items OI-01 to OI-08 and were approved by the product owner o
 
 There are no open decisions. OI-01 to OI-08 are resolved by D-21 to D-28.
 
-Nothing is awaiting approval. All derived decisions DD-01 to DD-33 are approved, except DD-16 (superseded). The only remaining items are the implementation-time calibration values in §4.
+Nothing is awaiting approval. All derived decisions DD-01 to DD-37 are approved, except DD-16 (superseded). The only remaining items are the implementation-time calibration values in §4.

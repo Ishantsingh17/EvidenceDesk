@@ -101,14 +101,14 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Ask Claude to read the PRD, TRD, UI/UX brief, App Flow, schema, and `CLAUDE.md`.
-- [ ] Generate a proposed token set for colours, typography, spacing, borders, shadows, and radii (light theme), mapped to shadcn/ui variables.
-- [ ] Implement the theme tokens and reusable layout primitives.
-- [ ] Implement application shell, sidebar, page header, responsive navigation, environment status, and mock-mode indicator.
-- [ ] Implement the shared status-badge mapping (UI brief §4.2).
-- [ ] Establish loading, empty, warning, error, and success components.
-- [ ] Add only the motion patterns defined in the UI/UX brief.
-- [ ] Run Playwright visual checks at desktop, tablet, and mobile widths.
+- [x] Ask Claude to read the PRD, TRD, UI/UX brief, App Flow, schema, and `CLAUDE.md`.
+- [x] Generate a proposed token set for colours, typography, spacing, borders, shadows, and radii (light theme), mapped to shadcn/ui variables.
+- [x] Implement the theme tokens and reusable layout primitives.
+- [x] Implement application shell, sidebar, page header, responsive navigation, environment status, and mock-mode indicator.
+- [x] Implement the shared status-badge mapping (UI brief §4.2).
+- [x] Establish loading, empty, warning, error, and success components.
+- [x] Add only the motion patterns defined in the UI/UX brief.
+- [x] Run Playwright visual checks at desktop, tablet, and mobile widths. *(Phase 2A also delivered the Overview screen; see UI brief §5 Screen 1 and DD-34 to DD-37.)*
 
 Exit criteria:
 

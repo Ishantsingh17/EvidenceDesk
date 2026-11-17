@@ -84,6 +84,22 @@ Do not substitute a different framework, database, embedding provider, LLM provi
 - Mock data is allowed only through the explicit mock adapter selected by `VITE_API_MODE=mock`, with a visible mock-mode indicator. It must never silently masquerade as real backend output, and live mode must never fall back to mock data.
 - Dark mode, document comparison, and other advanced features are stretch goals; do not show their controls in the MVP.
 
+### Frontend component conventions
+
+- Folders: `src/components/ui/` (shadcn primitives, owned by the project; restyle through tokens), `src/components/layout/` (shell: `AppShell`, `SidebarNavigation`, `TopBar`, `PageContainer`, `PageHeader`, `MockModeBanner`), `src/components/` and `src/components/feedback/` (shared: `StatusBadge`, `EmptyState`, `ErrorState`, `DemoDataTag`, `BrandMark`), `src/features/<screen>/` (screen sections), `src/pages/` (route components), `src/app/` (router, navigation config, health provider), `src/services/` (API client, `workspaceApi`, mock adapter in `services/mock/`), `src/types/api.ts` (schema types), `src/lib/` (`status.ts`, `format.ts`, `motion.ts`), `src/hooks/`.
+- Design tokens live only in `src/index.css` (documented in UI brief §3.1). Use token utilities (`bg-card`, `text-muted-foreground`, `text-section`, `bg-success-soft`, …); never hard-code hex colours or ad-hoc font sizes in components.
+- Every page: `PageContainer` + `PageHeader` (the only `h1`); panels use `h2`. Status labels always go through `lib/status.ts` + `StatusBadge` (icon + text + colour).
+- Data: screens fetch through `workspaceApi` (live or mock, chosen once from `VITE_API_MODE`) with `useAsync`; never import fixtures in components. Each data panel handles loading (skeleton), empty (`EmptyState`), error/not-available (`ErrorState`) and success. Panels showing mock data render `DemoDataTag`.
+- Backend health comes only from `useHealth()` (real `GET /health`, every mode).
+- Add a shadcn component only when a screen uses it (`npx shadcn@4.23.0 add <name>`); do not keep unused components.
+
+### Animation guidelines
+
+- Motion only (`motion/react`); presets in `src/lib/motion.ts` (`pageVariants`, `fadeInVariants`, `ledgerVariants`, `springSnappy`). Reuse them instead of new ad-hoc timings; keep durations at 150–220 ms.
+- Animate state changes and user actions only: page entry, active nav indicator, first-load KPI reveal and count-up (`useCountUp`), loading → content fade, interactive-card hover/tap. Do not add entrance animations to every section or hover effects to static panels.
+- Radix menus/sheets keep their built-in CSS transitions; do not wrap them in a second animation system.
+- Reduced motion is handled globally (`MotionConfig reducedMotion="user"` + CSS rule). For JS-driven values, read `useMediaQuery('(prefers-reduced-motion: reduce)')` synchronously rather than Motion's `useReducedMotion()`, which is false on the first render.
+
 ## 5. Timeline and status rules
 
 - Processing timelines must reflect real backend job/query events once integrated.

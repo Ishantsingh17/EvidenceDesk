@@ -5,8 +5,8 @@
 | Field | Value |
 |---|---|
 | Document type | UI/UX Design Brief |
-| Version | 1.1 |
-| Status | Baseline for frontend design — revised 2026-11-16 (see `docs/07-DECISION-LOG.md`) |
+| Version | 1.2 |
+| Status | Design system implemented in Phase 2A — revised 2026-11-17 (see `docs/07-DECISION-LOG.md` DD-34) |
 | Design direction | Premium enterprise SaaS / intelligence workspace |
 
 ---
@@ -33,42 +33,52 @@ The interface must make the system's work visible: users should understand which
 
 **Visual personality:** confident, calm, precise, professional, modern, transparent, and data-oriented.
 
-### 3.1 Initial design tokens
+### 3.1 Design tokens (implemented in Phase 2A)
 
-These are starting values for the MVP **light theme**. Claude Code may refine them, but changes must be applied consistently and documented. They map onto shadcn/ui CSS variables (for example `--surface` → `--card`, `--surface-muted` → `--muted`, `--nav-background` → `--sidebar`); record the final mapping when the design system is implemented. Dark-theme tokens are a stretch goal and are not defined for the MVP.
+The MVP **light theme** is implemented in `frontend/src/index.css` as CSS variables, exposed to Tailwind through `@theme inline`. Refinements to the initial values are listed in the "Change" column; apply any further change in `index.css` only and update this table. Dark-theme tokens are a stretch goal and are not defined for the MVP.
 
-| Token | Initial value | Usage |
-|---|---|---|
-| `--background` | `#F7F8FC` | Main light-mode canvas |
-| `--surface` | `#FFFFFF` | Cards, panels, menus |
-| `--surface-muted` | `#F1F3F9` | Secondary panels and hover backgrounds |
-| `--foreground` | `#111827` | Main text |
-| `--muted-foreground` | `#667085` | Secondary text |
-| `--primary` | `#4F46E5` | Primary actions and selected states |
-| `--primary-foreground` | `#FFFFFF` | Text on primary actions |
-| `--nav-background` | `#111827` | Deep navy sidebar |
-| `--success` | `#15803D` | Completed/success state |
-| `--warning` | `#B45309` | Warning/needs attention |
-| `--danger` | `#B42318` | Error/failed state |
-| `--info` | `#2563EB` | Informational state |
-| `--border` | `#E5E7EB` | Dividers and card borders |
-| `--radius-card` | `14px` | Main cards and panels |
-| `--radius-control` | `9px` | Inputs and buttons |
+| Brief token | Implemented variable (shadcn/ui) | Value | Change from initial | Usage |
+|---|---|---|---|---|
+| `--background` | `--background` | `#F7F8FC` | — | Main canvas |
+| `--surface` | `--card`, `--popover` | `#FFFFFF` | — | Cards, panels, menus |
+| `--surface-muted` | `--muted`, `--secondary` | `#F1F3F9` | — | Secondary panels, hover backgrounds |
+| — | `--accent` / `--accent-foreground` | `#EEF0FB` / `#2E2A8F` | New | Icon tiles, selected tints |
+| `--foreground` | `--foreground` | `#131A2B` | Was `#111827`: bluer "ink" to match the sidebar | Main text |
+| `--muted-foreground` | `--muted-foreground` | `#5B6478` | Was `#667085`: darker for WCAG AA on the canvas | Secondary text |
+| `--primary` | `--primary` / `--primary-hover` | `#4F46E5` / `#4338CA` | Hover token added | Primary actions, focus ring |
+| — | `--evidence` | `#0E7A72` | New secondary accent | Cited / verified evidence (sparingly) |
+| `--nav-background` | `--sidebar` | `#0E1626` | Was `#111827`: deep ink-blue | Sidebar |
+| — | `--sidebar-foreground` / `--sidebar-muted` / `--sidebar-accent` / `--sidebar-primary` | `#D5DBE7` / `#8D97AB` / `#1A2438` / `#A5A0FF` | New | Sidebar text, hover/active background, active indicator |
+| `--success` (+ soft) | `--success` / `--success-soft` | `#15803D` / `#ECFDF3` | Soft tint added | Success badges |
+| `--warning` (+ soft) | `--warning` / `--warning-soft` | `#B45309` / `#FFF6E5` | Soft tint added | Warning badges, mock-mode banner |
+| `--danger` (+ soft) | `--destructive` / `--danger-soft` | `#B42318` / `#FEF3F2` | Soft tint added | Error badges |
+| `--info` (+ soft) | `--info` / `--info-soft` | `#2563EB` / `#EFF5FF` | Soft tint added | Info / in-progress badges |
+| `--border` | `--border` / `--input` | `#E4E7EE` / `#D6DBE6` | Slightly cooler | Dividers, card and input borders |
+| `--radius-card` | `--radius-card` (`rounded-xl`) | `12px` | Was 14px: less "bubbly" | Cards and panels |
+| `--radius-control` | `--radius` (`rounded-lg`) | `8px` | Was 9px | Buttons, inputs, badges (`6px`) |
+| — | `--shadow-card` / `--shadow-raised` | soft 1–2px / 6–16px | New | Resting cards / hovered interactive cards |
 
-Do not rely on colour alone for state. Pair colour with a label and/or icon.
+Do not rely on colour alone for state. Pair colour with a label and/or icon. All text/background pairs above meet WCAG AA (4.5:1) for body text.
 
 ### 3.2 Typography
 
-- Preferred font: Geist or another clean, highly legible sans-serif available through a reliable package or local/system fallback.
-- Use a small, consistent type scale.
-- Page titles should be prominent but not oversized.
-- Table content, helper text, chart labels, and citations must remain readable.
-- Avoid mixing multiple unrelated typefaces.
+- Typeface: **IBM Plex Sans** (variable, `@fontsource-variable/ibm-plex-sans`, OFL-1.1) with a system sans-serif fallback. Chosen over the shadcn default Geist because its document-and-enterprise character and clear tabular figures suit an evidence workspace. One family only.
+- Type scale (Tailwind utilities from `index.css`):
+
+| Utility | Size / line height | Use |
+|---|---|---|
+| `text-title` | 24 / 32 px, semibold | Page title (`h1`, one per page) |
+| `text-metric` | 28 / 34 px, medium, tabular figures | KPI values |
+| `text-section` | 15 / 22 px, semibold | Panel titles (`h2`) |
+| `text-body` | 14 / 20 px | Body, tables, controls |
+| `text-caption` | 12 / 16 px | Helper text, metric labels, timestamps |
+
+- Sentence case everywhere; no all-caps labels. Keep descriptions under ~70 characters per line (`max-w-[65ch]`).
 
 ### 3.3 Layout and spacing
 
 - Desktop application shell with fixed/collapsible left sidebar and flexible main content.
-- Use a consistent spacing scale based on 4px increments.
+- Use a consistent spacing scale based on 4px increments. *Implemented:* page gutters 16px mobile, 24px tablet, 32px desktop (`PageContainer`), max content width 1280px, 24px between sections and panels, 20px panel padding.
 - Keep content aligned to a consistent page grid.
 - Prefer whitespace and clear section separation over excessive card borders.
 - Use moderate corner rounding and subtle shadows; avoid heavy glassmorphism everywhere.
@@ -90,8 +100,9 @@ The logo/product label appears at the top of the sidebar. A compact footer area 
 
 - Left sidebar: brand, primary navigation, environment/status indicator (backend `starting` / `healthy` / `degraded`), optional collapse control.
 - Main area: page title, concise page description, contextual primary action, page content.
-- Top-right area: no theme toggle in the MVP (dark mode is a stretch goal). Do not add a profile placeholder that implies real authentication.
-- **Mock-mode indicator:** when `VITE_API_MODE=mock`, show a persistent, clearly visible "Mock data — not connected to the backend" banner or badge on every page. It never appears in live mode.
+- Top-right area: no theme toggle in the MVP (dark mode is a stretch goal). Do not add a profile placeholder that implies real authentication. *Implemented:* a live backend indicator (click to re-check) and a "Local workspace" menu (states "single user, no sign-in"; links to Settings and the backend API reference) instead of a user profile. No global search is shown, because no search feature exists yet.
+- **Mock-mode indicator:** when `VITE_API_MODE=mock`, show a persistent, clearly visible "Mock data — not connected to the backend" banner or badge on every page. It never appears in live mode. *Implemented:* a banner on every page ("Mock data, not connected to the backend. Documents, questions and metrics are demo fixtures. Backend status is still checked live.") plus a "Demo data" tag on each panel filled by the mock adapter. The health check stays real in both modes.
+- Screens that are not built yet have working routes that show an honest "not built yet" page, so navigation never dead-ends.
 - Main canvas should be responsive. On narrow screens, the sidebar becomes a drawer or compact navigation.
 
 ### 4.2 Status label mapping
@@ -133,6 +144,8 @@ Timeline stage states: pending, active, completed, completed with warning, faile
 - Helpful empty state with a clear "Upload documents" action when the workspace is new.
 
 **Interactions:** navigate to a document, open the assistant, start an upload, open an evaluation run.
+
+*Implemented in Phase 2A:* greeting heading ("Good morning/afternoon/evening, welcome to EvidenceDesk AI", fallback "Welcome to EvidenceDesk AI"); a KPI ledger (one panel, four ruled columns: total documents, successfully processed with indexed share, total queries, **median** response time with sample count — the schema defines a median, not an average); recent documents table (name, type from file extension, upload date, status, pages); recent activity (uploads and questions merged, newest first); system status (backend health and document-processing activity from the real `GET /health`, AI service from `GET /settings/status`); quick actions (Upload documents, Open AI Assistant, View evaluation). In live mode, panels whose endpoints do not exist yet show "Not available yet". The latest-evaluation summary is deferred to the Evaluation screen phase; document rows are not links until a document detail view exists.
 
 ### Screen 2: Document Library (`/documents`)
 
@@ -307,6 +320,20 @@ Use Motion for React (`motion` package; imports from `motion/react`). Motion sho
 | Button | Subtle hover/tap feedback | Keep action clear and responsive. |
 | Loading state | Skeleton or restrained spinner | Prefer skeletons for page content and small indicators for actions. |
 
+### Implemented motion patterns (Phase 2A)
+
+| Pattern | Implementation |
+|---|---|
+| Page transition | `pageVariants` in `src/lib/motion.ts`: fade + 6px rise, 200 ms, keyed by route. |
+| Sidebar active item | Shared `layoutId` indicator with `springSnappy`; sidebar width animates 240 ↔ 64 px. |
+| KPI appearance | One staggered reveal of the ledger cells; values count up once on first data (`useCountUp`). |
+| Card hover | Only interactive cards (quick actions): border tint + raised shadow, no scaling. Static panels do not animate. |
+| Button feedback | shadcn press offset; quick actions use `whileTap={{ scale: 0.99 }}`. |
+| Dropdown / drawer | shadcn/Radix CSS enter/exit transitions (`tw-animate-css`, installed with shadcn), not a second JS library. |
+| Loading → content | Skeletons while loading, then a 150 ms fade-in (`fadeInVariants`). |
+
+Reduced motion: `MotionConfig reducedMotion="user"` at the root, a global CSS rule that shortens CSS animations and transitions, and `useCountUp` reads the media query synchronously so values never count up for those users.
+
 ### Motion constraints
 
 - Respect `prefers-reduced-motion` globally.
@@ -333,8 +360,8 @@ Forms should validate locally for immediate feedback and rely on backend validat
 
 | Viewport | Expected behaviour |
 |---|---|
-| Desktop (>= 1280px) | Full sidebar, multi-column dashboard, assistant with optional evidence side panel. |
-| Laptop (1024–1279px) | Compact sidebar and reduced dashboard columns. |
+| Desktop (>= 1280px) | Full sidebar (240px, can be collapsed), multi-column dashboard, assistant with optional evidence side panel. |
+| Laptop (1024–1279px) | Compact 64px icon rail with tooltips (can be expanded) and reduced dashboard columns. |
 | Tablet (768–1023px) | Sidebar collapses to drawer; tables may use horizontal scroll or stacked rows. |
 | Mobile (< 768px) | Drawer/bottom navigation, single-column content, full-width composer, evidence opens as a sheet. |
 

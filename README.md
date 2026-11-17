@@ -89,6 +89,8 @@ npm run dev                       # http://localhost:5173
 
 Optional: copy `frontend/.env.example` to `frontend/.env.local` to change `VITE_API_BASE_URL` or `VITE_API_MODE`.
 
+To see the Overview with demo data, run in mock mode: `$env:VITE_API_MODE='mock'; npm run dev`. A banner marks every page as mock data; the backend health check stays live. In the default live mode, panels without a backend endpoint yet show "Not available yet".
+
 Checks: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:e2e` (starts the backend and frontend automatically).
 
 ### Claude Code
