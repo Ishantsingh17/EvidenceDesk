@@ -34,6 +34,17 @@ def test_groq_retry_defaults_match_decision_log() -> None:
     assert settings.groq_max_retry_wait_seconds == 15
 
 
+@pytest.mark.parametrize("level", ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+def test_log_level_accepts_approved_levels(level: str) -> None:
+    assert Settings(_env_file=None, log_level=level).log_level == level
+
+
+def test_log_level_defaults_to_info_and_rejects_unknown() -> None:
+    assert Settings(_env_file=None).log_level == "INFO"
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, log_level="TRACE")
+
+
 def test_placeholder_groq_key_is_not_configured() -> None:
     assert not Settings(_env_file=None, groq_api_key="replace_me").groq_configured
     assert not Settings(_env_file=None, groq_api_key="").groq_configured

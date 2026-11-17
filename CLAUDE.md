@@ -28,7 +28,7 @@ If a task affects only one area, read that document plus any documents it depend
 - Tailwind CSS.
 - shadcn/ui as the primary component foundation.
 - Motion for React (`motion`, imports from `motion/react`) for purposeful animations.
-- Selected React Bits components only when they serve a specific design need.
+- Selected React Bits components only when they serve a specific design need, and only ones that do not require GSAP (DD-31).
 - Lucide React icons.
 - Recharts for evaluation/dashboard charts.
 - Playwright for browser-level validation.
@@ -152,6 +152,9 @@ Local check commands (see README for setup):
 - Record tested dependency versions in the appropriate package/dependency file.
 - Avoid broad upgrades unrelated to the task.
 - React Bits should be integrated component-by-component with any required dependency and licence information checked.
+- GSAP is not approved (DD-31). Before adding a React Bits item, check its registry `dependencies` and skip any that need GSAP. Ask before adding any other animation library; Motion is the primary one.
+- Keep `THIRD_PARTY_NOTICES.md` current. PyMuPDF is used under AGPL-3.0 (DD-32); do not distribute the app or expose it over a network without a licence review.
+- `npm audit` has 4 known moderate findings in dev-only shadcn CLI tooling (DD-33). Never run `npm audit fix --force`; check `npm audit --omit=dev` stays at 0.
 
 ## 10. Git and repository hygiene
 

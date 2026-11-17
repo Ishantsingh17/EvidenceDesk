@@ -49,6 +49,8 @@ Groq is used for LLM inference only. Embeddings are generated separately using S
 - Dark mode, document comparison, and advanced features are stretch goals.
 - Do not put the Groq API key in the frontend or commit it to Git.
 - Evaluation values must come from a labelled dataset and documented scoring methods; do not use fabricated benchmark claims.
+- PyMuPDF is used under AGPL-3.0. The POC is local and not distributed; any distribution or network deployment needs a licence review first. See `THIRD_PARTY_NOTICES.md`.
+- `npm audit` reports 4 moderate findings in dev-only shadcn CLI tooling; the built app is unaffected (`npm audit --omit=dev` = 0). See decision DD-33.
 
 ## Local setup (Windows)
 

@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     api_host: str = "127.0.0.1"
     api_port: int = Field(default=8000, ge=1, le=65535)
     frontend_origin: str = "http://localhost:5173"
-    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"  # DD-28
 
     # Groq (LLM inference only). The key is never returned by any endpoint.
     groq_api_key: SecretStr | None = None
