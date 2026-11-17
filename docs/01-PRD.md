@@ -254,7 +254,7 @@ Initial test design: 5–10 synthetic/public business documents (committed in `s
 - Development is local and intended for an interview demonstration.
 - The first version processes text-based PDFs, not scanned/image-only PDFs.
 - Groq is the LLM inference provider. The initial model is `openai/gpt-oss-20b`; it is configurable through `GROQ_MODEL` and must be checked against the account's currently available models.
-- The backend runs on Python 3.12.
+- The backend runs on Python 3.13 (64-bit CPython; decision D-29).
 - Sentence Transformers runs locally for embeddings; the initial candidate is `sentence-transformers/all-MiniLM-L6-v2`.
 - ChromaDB provides persistent vector storage.
 - SQLite stores POC metadata, job states, query logs, and evaluation records.

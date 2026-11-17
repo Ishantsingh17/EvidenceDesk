@@ -74,17 +74,17 @@ Exit criteria:
 
 Tasks:
 
-- [ ] Install or update Claude Code.
-- [ ] Install the official Anthropic Frontend Design plugin/skill using the current Claude Code plugin marketplace instructions.
-- [ ] Create the React + TypeScript + Vite frontend.
-- [ ] Initialise shadcn/ui using its current Vite setup instructions.
-- [ ] Install `motion`, `lucide-react`, and `recharts`.
-- [ ] Add selected React Bits components only when needed; treat the repository as a component source, not a requirement to install every effect.
-- [ ] Create the Python virtual environment explicitly with Python 3.12 (D-22) and the FastAPI project skeleton; record the patch version and pinned packages.
-- [ ] Implement validated settings with project-root path resolution.
-- [ ] Configure Playwright for browser testing; optionally connect Playwright MCP to Claude Code.
-- [ ] Create `backend/.env.example` and `frontend/.env.example` (`VITE_API_BASE_URL`, `VITE_API_MODE`).
-- [ ] Confirm the frontend can call the backend health endpoint.
+- [x] Install or update Claude Code.
+- [x] Install the official Anthropic Frontend Design plugin/skill using the current Claude Code plugin marketplace instructions.
+- [x] Create the React + TypeScript + Vite frontend.
+- [x] Initialise shadcn/ui using its current Vite setup instructions.
+- [x] Install `motion`, `lucide-react`, and `recharts`.
+- [ ] Add selected React Bits components only when needed; treat the repository as a component source, not a requirement to install every effect. *(Registry configured in Phase 1 — DD-30; no components added yet.)*
+- [x] Create the Python virtual environment explicitly with Python 3.13 (D-29) and the FastAPI project skeleton; record the patch version and pinned packages.
+- [x] Implement validated settings with project-root path resolution.
+- [x] Configure Playwright for browser testing; optionally connect Playwright MCP to Claude Code. *(Playwright MCP added in `.mcp.json`; the developer approves it in Claude Code.)*
+- [x] Create `backend/.env.example` and `frontend/.env.example` (`VITE_API_BASE_URL`, `VITE_API_MODE`).
+- [x] Confirm the frontend can call the backend health endpoint.
 
 Exit criteria:
 

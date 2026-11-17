@@ -1,0 +1,14 @@
+# Backend runtime dependencies — tested on Python 3.13.16 (64-bit CPython, Windows).
+# Install:  python -m pip install --only-binary=:all: -r requirements.txt
+# PyTorch comes from the official CPU-only index (no CUDA download).
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+fastapi==0.163.1
+uvicorn[standard]==0.54.0
+pydantic==2.14.3
+pydantic-settings==2.16.3
+pymupdf==2.1
+torch==2.15.0+cpu
+sentence-transformers==6.3.0
+chromadb==1.5.9
+groq==1.7.0

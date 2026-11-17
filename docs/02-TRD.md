@@ -173,7 +173,7 @@ Dark mode, document comparison, document-type filters, and PDF preview are stret
 
 ### 6.1 Runtime
 
-- Python 3.12 (approved; decision D-22). Create the virtual environment explicitly with 3.12, not the machine's default interpreter. Record the exact patch version.
+- Python 3.13, 64-bit CPython (approved; decision D-29, which supersedes D-22). Create the virtual environment explicitly with `py -3.13 -m venv backend/.venv`, not the machine's default interpreter. Tested patch version: 3.13.16.
 - FastAPI with Pydantic request/response models and validated settings.
 - Uvicorn for local serving, **single worker**.
 - SQLite for metadata and persisted workflow-event history.
@@ -434,6 +434,7 @@ APP_ENV=development
 API_HOST=127.0.0.1
 API_PORT=8000
 FRONTEND_ORIGIN=http://localhost:5173
+LOG_LEVEL=INFO
 
 GROQ_API_KEY=replace_me
 GROQ_MODEL=openai/gpt-oss-20b
@@ -479,7 +480,7 @@ These are the only frontend variables. Neither may contain a secret.
 
 The decisions are made (`docs/07-DECISION-LOG.md` D-21 to D-28). The following values are measured or confirmed during implementation and recorded in the decision log's "Implementation-time calibration" table (§4):
 
-- Exact Python 3.12 patch version and pinned library/Node package versions (Phase 1).
+- Exact Python 3.13 patch version and pinned library/Node package versions (Phase 1) — recorded: Python 3.13.16; see decision log §4.
 - Live confirmation that `openai/gpt-oss-20b` is available and honours the strict schema, or that the non-strict fallback (DD-27) is needed (Phase 6).
 - Calibrated `RETRIEVAL_MAX_DISTANCE`, its method, and the dataset version (Phase 6).
 - Final `MIN_PAGE_TEXT_CHARS` from the synthetic corpus (Phase 4).

@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Document type | Architecture and product decision log |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Active |
 
 This log records approved decisions that change or clarify the baseline documents. When a decision here conflicts with older wording elsewhere, this log and `docs/04-BACKEND-SCHEMA.md` take precedence, and the conflicting document must be corrected.
@@ -84,7 +84,7 @@ These resolve open items OI-01 to OI-08 and were approved by the product owner o
 | ID | Former item | Decision | Affected documents |
 |---|---|---|---|
 | D-21 | OI-01 Repository location | Move the project **outside OneDrive** before Phase 1. The developer does the move; it is not automated. | Plan §3 |
-| D-22 | OI-02 Python version | Use **Python 3.12** for the backend virtual environment. Record the exact patch version and pinned package versions after installation. | TRD §6.1, Plan §4, CLAUDE.md, README |
+| D-22 | OI-02 Python version | **Superseded by D-29 (2026-11-17).** *Originally: use Python 3.12 for the backend virtual environment.* | TRD §6.1, Plan §4, CLAUDE.md, README |
 | D-23 | OI-03 Groq model | Initial model **`openai/gpt-oss-20b`**, configured only through `GROQ_MODEL` (never hard-coded). Use Groq Structured Outputs with a **strict JSON Schema** for the RAG response if the selected model supports it (see DD-27), and always validate the response in the backend. Model reasoning output is excluded where the API allows, and is never logged, persisted, or displayed. Availability and strict-schema behaviour must be confirmed by a live smoke test before Phase 6 exit. | TRD §9/§17, Schema §7.2, PRD §12, CLAUDE.md, README |
 | D-24 | OI-04 Retrieval threshold | **Approved; value: Implementation-time calibration.** Calibrate `RETRIEVAL_MAX_DISTANCE` using the labelled dataset in Phase 6. Record the value, the method, and the dataset version here. Because the first dataset is small and calibration and evaluation use the same cases, report this overlap as a known limitation alongside the evaluation results. | TRD §7.4, Plan §9 |
 | D-25 | OI-05 Low-text threshold | **Approved; value: Implementation-time calibration.** Determine `MIN_PAGE_TEXT_CHARS` from the synthetic corpus PDFs in Phase 4. The default (30) is provisional until then. Record the final value here. | TRD §7.4, Plan §7 |
@@ -102,11 +102,20 @@ These resolve open items OI-01 to OI-08 and were approved by the product owner o
 | DD-26 | Approved | Retries apply to evaluation cases only. Interactive user queries fail fast with the stable error code, and the user can ask again. | The approved decision was scoped to evaluation cases; it avoids long silent waits in the UI. |
 | DD-27 | Approved | If the live smoke test shows the configured model does not support strict mode, the same JSON Schema is sent with `strict: false`. Backend Pydantic validation and the citation rules (schema §7.3) apply in both modes; invalid output still fails with `LLM_RESPONSE_INVALID`. The outcome is recorded in §4. | D-23 asks for strict mode only "if supported"; this defines the fallback without adding a dependency. |
 
+## 3a. Phase 1 decisions (2026-11-17)
+
+| ID | Status | Decision | Reason | Affected documents |
+|---|---|---|---|---|
+| D-29 | Approved | Use **Python 3.13** (standard 64-bit CPython, not free-threaded) for the backend, replacing D-22. The virtual environment is created with `py -3.13 -m venv backend/.venv`. Python 3.15 on the same machine is not used. *(Approved by the product owner on 2026-11-17.)* | Python 3.13 is installed on the development machine, and every approved backend package has a Python 3.13 Windows wheel (verified in Phase 1). | TRD §6.1/§18, PRD §12, Plan §4, CLAUDE.md, README |
+| DD-28 | Awaiting approval | Add the backend setting `LOG_LEVEL` (`DEBUG`/`INFO`/`WARNING`/`ERROR`, default `INFO`) for the `app` logger. | The Phase 1 brief asked for logging configuration; a level setting is the smallest configurable form. No new dependency. | TRD §17, `backend/.env.example` |
+| DD-29 | Approved (applies D-17/D-26) | PyTorch is installed **CPU-only** from the official index `https://download.pytorch.org/whl/cpu` (`torch==2.15.0+cpu`). All Python packages are installed as binary wheels (`--only-binary=:all:`); nothing is compiled from source. `backend/requirements.txt` pins the direct dependencies; `backend/requirements-lock.txt` pins the full tested environment; `backend/requirements-dev.txt` adds test and lint tools (pytest, httpx, ruff). | No GPU is required for the POC; CPU wheels are smaller and avoid a CUDA download. Pins make the environment reproducible. | TRD §6.1, README |
+| DD-30 | Approved (applies frontend stack) | shadcn/ui is initialised with the Radix base and the `radix-nova` style (Lucide icons); colours are replaced by the project tokens in Phase 2. The `shadcn` package is a dev dependency (its CSS is used at build time only). The free React Bits registry is configured as `@react-bits` in `frontend/components.json`; components are added one at a time when needed. React Bits components that need GSAP (a second animation library next to Motion) require approval before they are added. | Follows the official shadcn Vite instructions and CLAUDE.md §9 (no duplicate libraries without a reason). | UI brief §4, TRD §2 |
+
 ## 4. Implementation-time calibration (values recorded during implementation)
 
 | Item | Phase | Status |
 |---|---|---|
-| Exact Python 3.12 patch version and pinned package versions | 1 | Implementation-time calibration |
+| Exact Python patch version and pinned package versions | 1 | **Recorded 2026-11-17:** Python 3.13.16 (64-bit CPython, Windows). Backend pins: fastapi 0.163.1, uvicorn 0.54.0, pydantic 2.14.3, pydantic-settings 2.16.3, pymupdf 2.1, torch 2.15.0+cpu, sentence-transformers 6.3.0, chromadb 1.5.9, groq 1.7.0 (full list: `backend/requirements-lock.txt`). Frontend pins: `frontend/package.json` and `package-lock.json`. |
 | Confirmation that `openai/gpt-oss-20b` is available to the account and honours the strict schema, or that the DD-27 fallback is needed (live smoke test) | 6 | Implementation-time calibration |
 | Calibrated `RETRIEVAL_MAX_DISTANCE`, its method, and the dataset version | 6 | Implementation-time calibration |
 | Final `MIN_PAGE_TEXT_CHARS` | 4 | Implementation-time calibration |
@@ -116,4 +125,4 @@ These resolve open items OI-01 to OI-08 and were approved by the product owner o
 
 There are no open decisions. OI-01 to OI-08 are resolved by D-21 to D-28.
 
-Nothing is awaiting approval. All derived decisions DD-01 to DD-27 are approved, except DD-16 (superseded). The only remaining items are the implementation-time calibration values in §4.
+DD-28 (`LOG_LEVEL` setting) is awaiting approval. All other derived decisions DD-01 to DD-30 are approved, except DD-16 (superseded). The remaining items are DD-28 and the implementation-time calibration values in §4.

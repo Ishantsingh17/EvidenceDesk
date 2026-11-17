@@ -35,7 +35,7 @@ If a task affects only one area, read that document plus any documents it depend
 
 ### Backend
 
-- Python 3.12 + FastAPI, served by a single Uvicorn worker.
+- Python 3.13 + FastAPI, served by a single Uvicorn worker (D-29; virtual environment at `backend/.venv`).
 - Background work uses Python standard-library executors (no external task queue); CPU-heavy work runs outside the event loop; the embedding model loads once at startup.
 - One document-processing job and one evaluation run at a time, and never both at once (DD-02).
 - PyMuPDF for text-based PDF extraction.
@@ -138,6 +138,11 @@ For each bounded task:
 10. Report changed files, commands/tests run, actual outcomes, and known limitations.
 
 Do not claim a test, build, browser check, API call, or live Groq request passed unless it was actually executed and its result was observed.
+
+Local check commands (see README for setup):
+
+- Backend, from `backend/`: `.venv\Scripts\python.exe -m pytest`, `.venv\Scripts\python.exe -m ruff check .`, `.venv\Scripts\python.exe -m pip check`. Install Python packages only into `backend/.venv`, as wheels (`--only-binary=:all:`), and keep `requirements.txt` / `requirements-lock.txt` in sync.
+- Frontend, from `frontend/`: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:e2e`.
 
 ## 9. Dependency discipline
 

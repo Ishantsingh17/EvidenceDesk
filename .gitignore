@@ -22,12 +22,17 @@ data/
 *.db
 *.sqlite
 *.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
 chroma/
 
 # Testing and logs
 coverage/
 playwright-report/
 test-results/
+blob-report/
+playwright/.cache/
 *.log
 
 # IDE and OS
